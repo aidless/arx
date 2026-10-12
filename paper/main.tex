@@ -1,0 +1,321 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\newcommand{\toolname}{\textsc{arx}}
+\newcommand{\code}[1]{{\small\texttt{#1}}}
+
+\title{\toolname{}: A Statistical Gate for Autonomous Research Loops\\
+       \large (What happened when a local LLM wrote 19 experiments)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Autonomous research loops that combine an LLM with tool access are usually
+evaluated on how much work they complete. We ask a different question: of the
+claims such a loop produces, how many survive a check on whether the
+measurement could have resolved them at all?
+
+We built \toolname{}, a loop whose reports are gated by classical measurement
+theory rather than by the loop's own judgement. The gate refuses a claim when
+the gold producers are also the contestants, when the floor and the board are
+computed on different item sets, when fewer than three gold producers exist,
+when the reported margin is below the minimum detectable effect, or when the
+measured floor is not detectably above the chance rate.
+
+We then ran the complete loop five times on five topics, with a local
+7B-parameter model writing both the hypotheses and the experiment code, over
+107 papers retrieved from arXiv. The loop produced 19 gate decisions. Two were
+statistical verdicts: one floor was not estimable under the candidate
+processor's design, and one ``leader'' scored below the measured noise floor.
+The other seventeen were failures of code generation, not of statistics---the
+gate relayed 13 crashes and 4 outputs that never emitted the contract. It
+wrote zero findings.
+
+The headline number, 0/19, is not the contribution. The contribution is the
+separation: a loop that reports ``19 hypotheses tested, all inconclusive'' is
+describing 17 broken experiments and 2 genuine statistical refusals as if
+they were the same thing, and a reader cannot tell which from that sentence.
+We describe the gate, the four refusals, the ledger that makes the run
+auditable, and what this run does \emph{not} establish.
+\end{abstract}
+
+%==========================================================================
+\section{Introduction}
+%==========================================================================
+
+The past year produced many demonstrations of an LLM driving a research loop:
+propose a hypothesis, write code, run it, read the result, repeat. The
+evaluation question has almost always been throughput---how many experiments
+ran, how many papers were read, whether a report appeared at the end. Almost
+never: how many of the resulting claims were \emph{measurements} rather than
+plausible-looking text.
+
+That question matters more than it first appears, because the failure is not
+random. An LLM asked to produce an experiment produces text that looks like an
+experiment: random score tables labeled ``system-0'' through ``system-2'',
+majority votes defined with a two-element judge set, agreements computed
+against \code{scores[0]} when \code{scores} is a dictionary. It is not lying.
+It has no model of what the numbers are for. A loop that pipes that output
+into a report converts fluent code into a scientific claim, and the report
+gives no signal which one happened.
+
+\toolname{} is one response: put a gate between the run and the report, where
+the gate is classical measurement theory rather than a second LLM asked to be
+critical. The gate cannot fix a broken experiment. It can refuse to describe
+one as a result.
+
+\paragraph{What this paper is not.} We are not claiming a new statistical
+method. Leave-one-out floors, the four preconditions, and the paired
+minimum-detectable-effect calculation are all textbook. We are not claiming
+the loop is useful for research: five topics and 19 experiments is a
+mechanism of evaluation, not a research result. And we are not claiming the
+gate works well against a smarter model---it has been run against one 7B
+model and nothing else.
+
+%==========================================================================
+\section{The gate}
+%==========================================================================
+
+A leaderboard is \emph{readable} when its ordering separates the systems more
+than the measurement apparatus separates itself from nothing. Four
+preconditions, each a reason to refuse:
+
+\begin{enumerate}
+\item \textbf{Actor-disjointness.} The systems that produced the reference
+labels are not the systems being ranked. If the gold producers are also the
+contestants, the floor partly measures agreement with itself, and a contestant
+that helped define the gold has an advantage no amount of averaging removes.
+\item \textbf{Common denominator.} The floor and the board are computed on the
+same item set. The difference between a floor on 1,520 items and a board on
+1,084 of them is not an effect size; it is an artefact of subsetting, and
+subtracting the two produces a number that means nothing.
+\item \textbf{Multi-generator sufficiency.} At least three reference-label
+producers. With two, removing one leaves one, so ``agreement with the
+others'' is agreement with that one. The quantity is not weak; it does not
+exist.
+\item \textbf{Power-bounded resolution.} The margin between leader and floor
+exceeds the minimum detectable effect at the declared power. A margin of
+$+0.03$ with an MDE of $0.05$ is not a small effect, it is a sample too small
+to have an opinion.
+\end{enumerate}
+
+A fifth check runs first and quietly decides most cases. The floor is only
+interpretable if it is detectably above the chance rate. With $K$ labels the
+chance level is $1/K$; with five generators each flipping a coin, pairwise
+agreement sits near $1/K$ and every score above it looks like a separation. So
+the floor is tested against chance with the standard error that comes from the
+item count,
+\[
+z \;=\; \frac{\text{floor} - 1/K}{\sqrt{(1/K)(1-1/K)/n}}\,,
+\]
+and a $z$ below $z_{1-\alpha/2}$ means the reference labels have not
+demonstrably reproduced anything, and there is no floor to compare a score
+against.
+
+\paragraph{Why the ceiling is checked before the wall.} A board whose floor is
+at chance with a margin of $+0.47$ is the loudest possible false positive, and
+it survives every margin-only check: the margin is large and positive. Ordering
+the chance test first is the single highest-value decision in the gate.
+
+%==========================================================================
+\section{What the gate cannot do}
+%==========================================================================
+
+\begin{itemize}
+\item It cannot repair an experiment. A crashed run produces no verdict at
+all, only a recorded non-zero exit code.
+\item It cannot tell a real effect from an artefact. \code{READABLE} says the
+apparatus can separate this claim from its own noise; it says nothing about
+whether the apparatus measured the right thing.
+\item It cannot stop a loop from producing more hypotheses after a refusal.
+What it does is refuse to write them up, which is the only part a downstream
+reader sees.
+\end{itemize}
+
+%==========================================================================
+\section{Method: what actually ran}
+%==========================================================================
+
+Five runs on five topics, each starting from a single natural-language
+question, with a local \code{llama3.2:3b} (Ollama, OpenAI-compatible endpoint)
+writing both the hypotheses and the experiment scripts. Literature came from
+the arXiv API; failures to reach a source were recorded, not hidden.
+
+The loop, at each step, chooses among five actions by a hand-written
+information-gain heuristic divided by a cost, where the cost of re-running the
+literature search while candidates are untested is set high on purpose. It
+terminates on a stall counter or a wall-clock ceiling. Every decision, the
+budget snapshot, and the gate's reasons are appended to a hash-chained ledger.
+
+The experiment contract is a single JSON object on stdout:
+
+\lstset{basicstyle=\footnotesize\ttfamily,frame=single}
+\begin{lstlisting}
+{"votes": [[0,1,-1], ...],        // m generators x n items, -1 abstain
+ "scores": {"system-0": 0.91},   // contestant accuracies
+ "judge_ids": ["g1","g2","g3"],
+ "contestant_ids": ["system-0", ...],
+ "item_ids": [0,1,...],           // denominator, for the mismatch check
+ "se": 0.02}
+\end{lstlisting}
+
+\paragraph{Pre-registration as ordering, not policy.} Before the subprocess
+starts, the loop decides the number of planned looks, hashes the script it is
+about to execute, and writes both to the ledger. The gate then reads
+\code{k\_max} from the ledger, never from the experiment's own report, and
+compares the hash measured off the file that ran against the one pinned. A
+script that reports a different look count or a different hash is refused
+before its numbers are examined. This closes the ``run a fixed-sample test,
+miss, then claim you only intended one look'' hole structurally: the claim
+becomes impossible rather than forbidden.
+
+%==========================================================================
+\section{Results}
+%==========================================================================
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrrrrl}
+\toprule
+topic & papers & exps & crashes & \multicolumn{2}{c}{gate verdicts}\\
+\midrule
+reward hacking                     & 20 & 3 & 2 & \multicolumn{2}{l}{$3\times$ UNDECIDABLE}\\
+noise floors in LLM-as-judge       & 27 & 5 & 3 & \multicolumn{2}{l}{$5\times$ UNDECIDABLE}\\
+calibration of confidence          & 20 & 4 & 1 & \multicolumn{2}{l}{$1\times$ UNREADABLE, $3\times$ UNDECIDABLE}\\
+spurious correlations              & 20 & 3 & 3 & \multicolumn{2}{l}{$3\times$ UNDECIDABLE}\\
+reproducibility of margins         & 20 & 4 & 4 & \multicolumn{2}{l}{$4\times$ UNDECIDABLE}\\
+\midrule
+\textbf{total} & \textbf{107} & \textbf{19} & \textbf{13} &
+\end{tabular}
+\caption{Five complete loop runs. ``Crashes'' counts experiments that exited
+non-zero. All five ledgers verify as valid hash chains.}
+\label{tab:runs}
+\end{table}
+
+\subsection{The split that matters}
+
+The 19 gate decisions are not 19 of the same thing:
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lr}
+\toprule
+reason for the gate's decision & count\\
+\midrule
+execution failure the gate merely relayed & \textbf{17}\\
+\quad experiment exited non-zero & 13\\
+\quad no JSON object found on stdout & 4\\
+\addlinespace
+a verdict the gate reached statistically & \textbf{2}\\
+\quad floor not estimable (\code{floor\_degenerate}) & 1\\
+\quad leader below the measured floor (\code{UNREADABLE}) & 1\\
+\midrule
+findings written & \textbf{0}\\
+\bottomrule
+\end{tabular}
+\caption{The same 19 decisions, separated by whether the gate did any
+statistical work. Reporting only ``0 findings'' or only ``19 decisions''
+loses this distinction.}
+\label{tab:split}
+\end{table}
+
+\subsection{The two statistical refusals}
+
+\paragraph{The floor did not exist.} One run produced five generators over ten
+items and the gate returned \code{floor\_degenerate}. This is the case where
+the candidate processor's own design was insufficient, and the gate's verdict
+was the honest one. No amount of analysis of that output produces a floor, and
+the alternative---computing something and labelling it a floor---is the failure
+this gate exists to prevent.
+
+\paragraph{The ``leader'' was below the noise.} One run scored a contestant at
+0.80 against a floor of 1.00 (ten items, three generators). The margin was
+$-0.20$. This is the case where a loop without a gate would report ``the
+leader scores 0.80'' as a finding, and the number 0.80 is arithmetically true
+and scientifically empty.
+
+\subsection{What the 13 crashes looked like}
+
+Not adversarial inputs. Representative failures from the model's own
+experiment code:
+
+\begin{itemize}
+\item \code{NameError: name 'i' is not defined}---a loop variable used
+outside the loop that introduced it.
+\item \code{KeyError: 0} on \code{scores[vote[0]]}, where \code{scores} is a
+dictionary keyed by strings and \code{vote[0]} is an integer index. The code
+had no model of which it was.
+\item \code{Object of type float32 is not JSON serializable}---output produced
+by \code{json.dumps} on numpy scalars.
+\end{itemize}
+
+These are not prompt failures. They are the ordinary consequence of asking a
+language model for ``an experiment'' without giving it a model of what the
+numbers are for, and they are the reason a gate has to sit in the path rather
+than an instruction that says ``do not fabricate results.''
+
+%==========================================================================
+\section{The honest reading of 0 findings}
+%==========================================================================
+
+The number 0/19 answers one question: \emph{did any claim produced by this
+loop clear a statistical check on its measurement?} It does not answer whether
+a stronger model would produce experiments that run, whether the gate would
+then let bad claims through, or whether the topics were ones where a small
+experiment could learn anything.
+
+It also does not show the gate's selectivity, because selectivity requires
+candidates that can fail on statistical grounds rather than execution grounds.
+With 2 statistical decisions, the gate has been exercised, not validated. That
+is a fact about this run and we report it rather than rounding it up.
+
+What the run does establish is narrower and more useful: when the loop is
+allowed to write its own report, all 19 decisions land in the report with no
+way for a reader to tell 17 broken experiments from 2 refusals. With the gate
+and the ledger, the split in Table~\ref{tab:split} is read back mechanically,
+and the ledger hash chain means the split can be checked by someone who was
+not there.
+
+%==========================================================================
+\section{Related work}
+%==========================================================================
+
+LLM-as-a-judge evaluation and its noise floors are covered in the concurrent
+literature on judge reliability; our floor estimate is the leave-one-out
+agreement used in that line of work. Agent frameworks for science typically
+end at producing a report; \toolname{} differs in that the report is not
+writable without a passing audit.
+
+%==========================================================================
+\section{Limitations}
+%==========================================================================
+
+\begin{itemize}
+\item One model, one size, five topics. Nothing here is a benchmark and we do
+not claim a number that would generalize.
+\item 68\% of experiments crashed, so the gate was exercised on 2 statistical
+vent points. Selectivity is untested.
+\item The information-gain heuristic that orders the loop's actions is
+hand-written, not fitted. It is coarse and it is not the subject of this
+paper; a fitted version would immediately become a target of the same
+question this paper asks, which is why it is deliberately not learned here.
+\end{itemize}
+
+%==========================================================================
+\section{Conclusion}
+%==========================================================================
+
+The interesting number in this run is not 0/19 findings. It is 17/19 execution
+failures and 2/19 statistical refusals, and the fact that without a gate those
+19 arrive in a report looking identical.
+
+\end{document}
