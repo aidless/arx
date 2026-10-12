@@ -28,6 +28,20 @@ python3 examples/01_quick_run.py     # no API key, no network, no model
 The examples are the fastest way to see what the gate does. Each one runs
 offline, in a few seconds, and prints the numbers its own code produced.
 
+The `arx` command lands wherever pip puts user scripts. On this machine that is
+`~/.local/bin`, which is often not on `PATH`, so either add it or call the CLI as
+a module:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"    # if pip installed to user site
+arx --help
+# or, no PATH change needed:
+python3 -m arx.cli --help
+```
+
+Python 3.12+ is the only supported version and the only one required — the core
+package imports nothing beyond `numpy` and the standard library.
+
 ## What the gate refuses
 
 Every scientific claim in a report has to clear four checks. Each check is a
