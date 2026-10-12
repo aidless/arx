@@ -39,10 +39,18 @@ report is about.
 
 ## Notes on building
 
-No LaTeX is installed here, so `main.tex` is the deliverable rather than a
-PDF. It uses only standard packages (geometry, booktabs, amsmath, hyperref,
-listings) and should build with any TeX distribution:
+`main.pdf` is committed so the report is readable without a TeX toolchain. It
+is built with `pdflatex` and the Latin Modern fonts, so building it again
+needs `texlive-latex-base`, `texlive-latex-recommended`, and `lmodern` (the
+LaTeX package, not the fontconfig one):
 
 ```bash
 pdflatex main.tex && pdflatex main.tex   # twice, for the cross-references
 ```
+
+The machine that produced the committed PDF had no root access and no TeX
+installed, so it built one from debs extracted into a local prefix
+(texlive-latex-base, texlive-latex-recommended, lmodern; formats via
+`fmtutil-user`; font maps via `updmap-user` with a merged `updmap.cfg`). None
+of that machinery is needed to rebuild the paper on a machine with a normal
+TeX distribution — the commands above are enough.
