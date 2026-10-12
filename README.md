@@ -6,6 +6,8 @@
 reports findings — but only after a statistical gate decides the measurement
 could actually resolve the thing being claimed.
 
+[![CI](https://github.com/aidless/arx/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/arx/actions/workflows/ci.yml)
+
 ```
 pytest: 369 passed   |   ruff: clean   |   examples: 5, all runnable offline
 ```
