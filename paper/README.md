@@ -6,9 +6,10 @@ claims about what the gate does, and a claim should be traceable to a run.
 
 ## What the paper is not
 
-It is not a benchmark submission and it reports no generalisable number. One
-model, five topics, 19 gate decisions. The paper says this in its abstract,
-its limitations section, and its headline table.
+It is not a benchmark submission and it reports no generalisable number. Two
+small models (3B and 8B), five topics each, and 37 gate decisions across the
+two runs. The paper says this in its abstract, its limitations section, and
+its headline tables.
 
 ## Where the numbers come from
 
@@ -17,7 +18,11 @@ Every number in the paper is read back out of the ledgers produced by
 
 ```bash
 bash scripts/scale_run.sh 5        # five topics, ~20 min on this machine
-PYTHONPATH=src python3 /tmp/tally.py    # prints Table 1 and Table 2
+ARX_LLM_MODEL=llama3.1:8b ARX_SCALE_OUT=/tmp/arx_scale_b \
+    bash scripts/scale_run.sh 5    # the 8B replication
+PYTHONPATH=src python3 scripts/compare_models.py \
+    --label "A_llama3.2-3b=/tmp/arx_scale" \
+    --label "B_llama3.1-8b=/tmp/arx_scale_b"   # Tables 1-3
 ```
 
 The ledgers are hash-chained, so the tally can be recomputed by anyone who has

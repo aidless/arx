@@ -33,14 +33,21 @@ computed on different item sets, when fewer than three gold producers exist,
 when the reported margin is below the minimum detectable effect, or when the
 measured floor is not detectably above the chance rate.
 
-We then ran the complete loop five times on five topics, with a local
-7B-parameter model writing both the hypotheses and the experiment code, over
-107 papers retrieved from arXiv. The loop produced 19 gate decisions. Two were
+We then ran the complete loop five times on five topics, with local Llama
+models (3B, then 8B) writing both the hypotheses and the experiment code, over
+about one hundred papers retrieved from arXiv per run. The 3B run produced 19
+gate decisions. Two were
 statistical verdicts: one floor was not estimable under the candidate
 processor's design, and one ``leader'' scored below the measured noise floor.
 The other seventeen were failures of code generation, not of statistics---the
 gate relayed 13 crashes and 4 outputs that never emitted the contract. It
 wrote zero findings.
+
+A replication with the 8B model moved the split: crashes fell to half the
+experiments, and the gate reached five statistical verdicts instead of two---
+all of them floors not estimable from the designs the larger model produced.
+The better a model writes code, the more of the gate's work is statistics
+rather than error relay. Neither model produced a claim that survived.
 
 The headline number, 0/19, is not the contribution. The contribution is the
 separation: a loop that reports ``19 hypotheses tested, all inconclusive'' is
@@ -80,8 +87,10 @@ method. Leave-one-out floors, the four preconditions, and the paired
 minimum-detectable-effect calculation are all textbook. We are not claiming
 the loop is useful for research: five topics and 19 experiments is a
 mechanism of evaluation, not a research result. And we are not claiming the
-gate works well against a smarter model---it has been run against one 7B
-model and nothing else.
+gate works well against a smarter model---we have run it against two small
+ones (3B and 8B), and the larger one still produced no experiment the gate
+could accept; how the gate treats genuinely competent experiment code is
+unknown.
 
 %==========================================================================
 \section{The gate}
@@ -149,7 +158,8 @@ reader sees.
 
 Five runs on five topics, each starting from a single natural-language
 question, with a local \code{llama3.2:3b} (Ollama, OpenAI-compatible endpoint)
-writing both the hypotheses and the experiment scripts. Literature came from
+writing both the hypotheses and the experiment scripts; the replication in
+Section~5.4 repeats the protocol with \code{llama3.1:8b}. Literature came from
 the arXiv API; failures to reach a source were recorded, not hidden.
 
 The loop, at each step, chooses among five actions by a hand-written
@@ -198,8 +208,9 @@ reproducibility of margins         & 20 & 4 & 4 & \multicolumn{2}{l}{$4\times$ U
 \midrule
 \textbf{total} & \textbf{107} & \textbf{19} & \textbf{13} &
 \end{tabular}
-\caption{Five complete loop runs. ``Crashes'' counts experiments that exited
-non-zero. All five ledgers verify as valid hash chains.}
+\caption{Five complete loop runs with the 3B model. ``Crashes'' counts
+experiments that exited non-zero. All five ledgers verify as valid hash
+chains. The 8B replication is summarised in Table~\ref{tab:models}.}
 \label{tab:runs}
 \end{table}
 
@@ -265,6 +276,44 @@ language model for ``an experiment'' without giving it a model of what the
 numbers are for, and they are the reason a gate has to sit in the path rather
 than an instruction that says ``do not fabricate results.''
 
+\subsection{A second model moves the split}
+
+The five runs above used \code{llama3.2:3b}. We repeated the full protocol ---
+same five topics, same gate, same ledger discipline --- with
+\code{llama3.1:8b}. Every ledger verifies. The comparison:
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrr}
+\toprule
+ & 3B & 8B\\
+\midrule
+papers retrieved & 107 & 100\\
+experiments written & 19 & 20\\
+experiments crashed & 13 (68\%) & 10 (50\%)\\
+\addlinespace
+gate decisions & 19 & 18\\
+\quad relayed execution failures & 17 & 13\\
+\quad statistical verdicts & 2 & 5\\
+\midrule
+findings written & 0 & 0\\
+\bottomrule
+\end{tabular}
+\caption{Same protocol, two models. The split between relayed failures and
+statistical verdicts is not a property of the gate; it moves with the
+model's ability to produce code that runs.}
+\label{tab:models}
+\end{table}
+
+The larger model crashes less and therefore hands the gate more statistical
+decision points. What it hands them is consistent: all five of its statistical
+verdicts are \code{floor\_degenerate} --- vote matrices from which no floor is
+estimable, typically because the design has too few gold producers. The 8B
+model reliably writes code that runs, and reliably writes experiment designs
+that cannot support the claim being made. The failure moved from the code to
+the statistics, and the gate caught it in both places. Zero findings either
+way is the honest reading of both runs, not a coincidence to be averaged away.
+
 %==========================================================================
 \section{The honest reading of 0 findings}
 %==========================================================================
@@ -277,8 +326,10 @@ experiment could learn anything.
 
 It also does not show the gate's selectivity, because selectivity requires
 candidates that can fail on statistical grounds rather than execution grounds.
-With 2 statistical decisions, the gate has been exercised, not validated. That
-is a fact about this run and we report it rather than rounding it up.
+With 2 statistical decisions from the 3B run and 5 from the 8B replication,
+the gate has been exercised, not validated: seven statistical decision points,
+all refusals, no acceptance side observed. That is a fact about these runs and
+we report it rather than rounding it up.
 
 What the run does establish is narrower and more useful: when the loop is
 allowed to write its own report, all 19 decisions land in the report with no
@@ -302,10 +353,12 @@ writable without a passing audit.
 %==========================================================================
 
 \begin{itemize}
-\item One model, one size, five topics. Nothing here is a benchmark and we do
-not claim a number that would generalize.
-\item 68\% of experiments crashed, so the gate was exercised on 2 statistical
-vent points. Selectivity is untested.
+\item Two small models (3B and 8B), five topics. Nothing here is a benchmark
+and we do not claim a number that would generalize.
+\item Half to two-thirds of experiments crashed, so across both models the
+gate saw 7 statistical decision points and 0 acceptances. Whether the gate
+accepts a claim that deserves acceptance is unobserved; selectivity is
+untested in the accepting direction.
 \item The information-gain heuristic that orders the loop's actions is
 hand-written, not fitted. It is coarse and it is not the subject of this
 paper; a fitted version would immediately become a target of the same
