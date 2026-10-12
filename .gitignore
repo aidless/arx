@@ -40,3 +40,7 @@ examples/_out/
 build/
 dist/
 *.egg-info/
+paper/main.aux
+paper/main.log
+paper/main.out
+paper/missfont.log
