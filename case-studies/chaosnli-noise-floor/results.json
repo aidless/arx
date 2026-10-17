@@ -1,86 +1,282 @@
 {
-  "board": [
-    {
-      "accuracy": 0.78665785997358,
-      "system": "roberta-large"
+  "configs": {
+    "alphanli": {
+      "board": [
+        {
+          "accuracy": 0.8472584856396866,
+          "system": "albert-xxlarge"
+        },
+        {
+          "accuracy": 0.8368146214099217,
+          "system": "roberta-large"
+        },
+        {
+          "accuracy": 0.8139686684073107,
+          "system": "bart-large"
+        },
+        {
+          "accuracy": 0.8133159268929504,
+          "system": "xlnet-large"
+        },
+        {
+          "accuracy": 0.7395561357702349,
+          "system": "roberta-base"
+        },
+        {
+          "accuracy": 0.6866840731070496,
+          "system": "xlnet-base"
+        },
+        {
+          "accuracy": 0.6821148825065274,
+          "system": "bert-large"
+        },
+        {
+          "accuracy": 0.6533942558746736,
+          "system": "bert-base"
+        },
+        {
+          "accuracy": 0.6070496083550914,
+          "system": "distilbert"
+        }
+      ],
+      "chance_level": 0.5,
+      "config": "alphanli",
+      "delta_declared": 0.02,
+      "floor_across_seeds": [
+        0.8785639686684074,
+        0.8785639686684072,
+        0.8785639686684072
+      ],
+      "floor_estimate": 0.8785639686684074,
+      "floor_generators": "100 pseudo-annotators expanded from per-item vote counts",
+      "floor_method": "loo",
+      "floor_seed_spread": 1.1102230246251565e-16,
+      "floor_vs_chance": {
+        "above_chance": true,
+        "critical_z": 1.9599639845400536,
+        "n_items": 1532,
+        "n_items_needed": 7,
+        "note": "7 items would put this floor above chance at alpha=0.05",
+        "se": 0.0127744032576899,
+        "z": 29.63457165331934
+      },
+      "leader_score": 0.8472584856396866,
+      "leader_system": "albert-xxlarge",
+      "margin": -0.031305483028720715,
+      "mde": 0.02377526181228239,
+      "mde_method": "cluster_bootstrap",
+      "n_contestants": 9,
+      "n_generators": 100,
+      "n_items": 1532,
+      "reasons": [
+        "leader albert-xxlarge (0.8473) is at or below the measured noise floor (0.8786)"
+      ],
+      "sources": {
+        "annotations": {
+          "license": "CC-BY-NC-4.0 (ChaosNLI v1.0, Nie et al. 2020, arXiv:2010.03532)",
+          "sha256": "f55817ecc11a02ba3030cd7d2c567d23843456809020723abad53f4fde024c9e",
+          "urls_tried": [
+            "https://huggingface.co/datasets/earino/chaosnli/resolve/main/raw/chaosNLI_alphanli.jsonl"
+          ]
+        },
+        "model_predictions": {
+          "note": "third-party vendored copy; the upstream Dropbox link was unreachable",
+          "sha256": "58ced70a3b2eb9b9ad4e0573e1a5b5096d76da1f2f9836dda14754c43726f938",
+          "urls_tried": [
+            "https://raw.githubusercontent.com/TheGuy-26/chaosnli-deberta-modernbert/main/ChaosNLI/data/model_predictions/model_predictions_for_abdnli.json"
+          ]
+        }
+      },
+      "task": "2-way",
+      "threshold": 0.02377526181228239,
+      "top1_top2_gap": 0.010443864229764954,
+      "top1_top4_spread": 0.03394255874673624,
+      "verdict": "UNREADABLE"
     },
-    {
-      "accuracy": 0.7826948480845443,
-      "system": "bart-large"
+    "mnli_m": {
+      "board": [
+        {
+          "accuracy": 0.6353971232020013,
+          "system": "roberta-large"
+        },
+        {
+          "accuracy": 0.6185115697310819,
+          "system": "xlnet-large"
+        },
+        {
+          "accuracy": 0.592245153220763,
+          "system": "roberta-base"
+        },
+        {
+          "accuracy": 0.592245153220763,
+          "system": "bart-large"
+        },
+        {
+          "accuracy": 0.5897435897435898,
+          "system": "albert-xxlarge"
+        },
+        {
+          "accuracy": 0.5891181988742964,
+          "system": "xlnet-base"
+        },
+        {
+          "accuracy": 0.5691056910569106,
+          "system": "bert-large"
+        },
+        {
+          "accuracy": 0.5590994371482176,
+          "system": "bert-base"
+        },
+        {
+          "accuracy": 0.5103189493433395,
+          "system": "distilbert"
+        }
+      ],
+      "chance_level": 0.3333333333333333,
+      "config": "mnli_m",
+      "delta_declared": 0.02,
+      "floor_across_seeds": [
+        0.6416447779862415,
+        0.6416447779862415,
+        0.6416447779862413
+      ],
+      "floor_estimate": 0.6416447779862415,
+      "floor_generators": "100 pseudo-annotators expanded from per-item vote counts",
+      "floor_method": "loo",
+      "floor_seed_spread": 2.220446049250313e-16,
+      "floor_vs_chance": {
+        "above_chance": true,
+        "critical_z": 1.9599639845400536,
+        "n_items": 1599,
+        "n_items_needed": 9,
+        "note": "9 items would put this floor above chance at alpha=0.05",
+        "se": 0.011788797594829013,
+        "z": 26.152916968236408
+      },
+      "leader_score": 0.6353971232020013,
+      "leader_system": "roberta-large",
+      "margin": -0.006247654784240275,
+      "mde": 0.025535288641634533,
+      "mde_method": "cluster_bootstrap",
+      "n_contestants": 9,
+      "n_generators": 100,
+      "n_items": 1599,
+      "reasons": [
+        "leader roberta-large (0.6354) is at or below the measured noise floor (0.6416)"
+      ],
+      "sources": {
+        "annotations": {
+          "license": "CC-BY-NC-4.0 (ChaosNLI v1.0, Nie et al. 2020, arXiv:2010.03532)",
+          "sha256": "8eb49b589488e7b1a9ec95fb8a864bd50f0509b4f808eed0aed3f8167617664d",
+          "urls_tried": [
+            "https://huggingface.co/datasets/earino/chaosnli/resolve/main/raw/chaosNLI_mnli_m.jsonl"
+          ]
+        },
+        "model_predictions": {
+          "note": "third-party vendored copy; the upstream Dropbox link was unreachable",
+          "sha256": "7c788bb9df6917f56a99a3bbf19c307bf2d02ad14d8f02537338b7bfb629bb53",
+          "urls_tried": [
+            "https://raw.githubusercontent.com/TheGuy-26/chaosnli-deberta-modernbert/main/ChaosNLI/data/model_predictions/model_predictions_for_snli_mnli.json"
+          ]
+        }
+      },
+      "task": "3-way",
+      "threshold": 0.025535288641634533,
+      "top1_top2_gap": 0.016885553470919357,
+      "top1_top4_spread": 0.04315196998123827,
+      "verdict": "UNREADABLE"
     },
-    {
-      "accuracy": 0.7813738441215323,
-      "system": "albert-xxlarge"
-    },
-    {
-      "accuracy": 0.7807133421400264,
-      "system": "xlnet-large"
-    },
-    {
-      "accuracy": 0.7536327608982827,
-      "system": "roberta-base"
-    },
-    {
-      "accuracy": 0.7384412153236459,
-      "system": "bert-large"
-    },
-    {
-      "accuracy": 0.7364597093791282,
-      "system": "xlnet-base"
-    },
-    {
-      "accuracy": 0.7291941875825627,
-      "system": "bert-base"
-    },
-    {
-      "accuracy": 0.702113606340819,
-      "system": "distilbert"
+    "snli": {
+      "board": [
+        {
+          "accuracy": 0.78665785997358,
+          "system": "roberta-large"
+        },
+        {
+          "accuracy": 0.7826948480845443,
+          "system": "bart-large"
+        },
+        {
+          "accuracy": 0.7813738441215323,
+          "system": "albert-xxlarge"
+        },
+        {
+          "accuracy": 0.7807133421400264,
+          "system": "xlnet-large"
+        },
+        {
+          "accuracy": 0.7536327608982827,
+          "system": "roberta-base"
+        },
+        {
+          "accuracy": 0.7384412153236459,
+          "system": "bert-large"
+        },
+        {
+          "accuracy": 0.7364597093791282,
+          "system": "xlnet-base"
+        },
+        {
+          "accuracy": 0.7291941875825627,
+          "system": "bert-base"
+        },
+        {
+          "accuracy": 0.702113606340819,
+          "system": "distilbert"
+        }
+      ],
+      "chance_level": 0.3333333333333333,
+      "config": "snli",
+      "delta_declared": 0.02,
+      "floor_across_seeds": [
+        0.7483817701453103,
+        0.7483817701453103,
+        0.7483817701453104
+      ],
+      "floor_estimate": 0.7483817701453103,
+      "floor_generators": "100 pseudo-annotators expanded from per-item vote counts",
+      "floor_method": "loo",
+      "floor_seed_spread": 1.1102230246251565e-16,
+      "floor_vs_chance": {
+        "above_chance": true,
+        "critical_z": 1.9599639845400536,
+        "n_items": 1514,
+        "n_items_needed": 5,
+        "note": "5 items would put this floor above chance at alpha=0.05",
+        "se": 0.0121152060697469,
+        "z": 34.25847108357503
+      },
+      "leader_score": 0.78665785997358,
+      "leader_system": "roberta-large",
+      "margin": 0.03827608982826969,
+      "mde": 0.020342380967899674,
+      "mde_method": "cluster_bootstrap",
+      "n_contestants": 9,
+      "n_generators": 100,
+      "n_items": 1514,
+      "reasons": [],
+      "sources": {
+        "annotations": {
+          "license": "CC-BY-NC-4.0 (ChaosNLI v1.0, Nie et al. 2020, arXiv:2010.03532)",
+          "sha256": "99f9015ddda7d85f66a087452bc30d53974314fe27e7d589e2f41ad44bd509c1",
+          "urls_tried": [
+            "https://huggingface.co/datasets/earino/chaosnli/resolve/main/raw/chaosNLI_snli.jsonl"
+          ]
+        },
+        "model_predictions": {
+          "note": "third-party vendored copy; the upstream Dropbox link was unreachable",
+          "sha256": "7c788bb9df6917f56a99a3bbf19c307bf2d02ad14d8f02537338b7bfb629bb53",
+          "urls_tried": [
+            "https://raw.githubusercontent.com/TheGuy-26/chaosnli-deberta-modernbert/main/ChaosNLI/data/model_predictions/model_predictions_for_snli_mnli.json"
+          ]
+        }
+      },
+      "task": "3-way",
+      "threshold": 0.020342380967899674,
+      "top1_top2_gap": 0.003963011889035695,
+      "top1_top4_spread": 0.005944517833553542,
+      "verdict": "READABLE"
     }
-  ],
-  "chance_level": 0.3333333333333333,
-  "config": "snli",
-  "delta_declared": 0.02,
-  "floor_across_seeds": [
-    0.7483817701453103,
-    0.7483817701453103,
-    0.7483817701453104
-  ],
-  "floor_estimate": 0.7483817701453103,
-  "floor_generators": "100 pseudo-annotators expanded from per-item vote counts",
-  "floor_method": "loo",
-  "floor_seed_spread": 1.1102230246251565e-16,
-  "floor_vs_chance": {
-    "above_chance": true,
-    "critical_z": 1.9599639845400536,
-    "n_items": 1514,
-    "n_items_needed": 5,
-    "note": "5 items would put this floor above chance at alpha=0.05",
-    "se": 0.0121152060697469,
-    "z": 34.25847108357503
   },
-  "leader_score": 0.78665785997358,
-  "leader_system": "roberta-large",
-  "margin": 0.03827608982826969,
-  "mde": 0.020342380967899674,
-  "mde_method": "cluster_bootstrap",
-  "n_contestants": 9,
-  "n_generators": 100,
-  "n_items": 1514,
-  "reasons": [],
-  "sources": {
-    "annotations": {
-      "license": "CC-BY-NC-4.0 (ChaosNLI v1.0, Nie et al. 2020, arXiv:2010.03532)",
-      "sha256": "99f9015ddda7d85f66a087452bc30d53974314fe27e7d589e2f41ad44bd509c1",
-      "url": "https://huggingface.co/datasets/earino/chaosnli/resolve/main/raw/chaosNLI_snli.jsonl"
-    },
-    "model_predictions": {
-      "note": "third-party vendored copy; the upstream Dropbox link was unreachable",
-      "sha256": "7c788bb9df6917f56a99a3bbf19c307bf2d02ad14d8f02537338b7bfb629bb53",
-      "url": "https://raw.githubusercontent.com/TheGuy-26/chaosnli-deberta-modernbert/main/ChaosNLI/data/model_predictions/model_predictions_for_snli_mnli.json"
-    }
-  },
-  "threshold": 0.020342380967899674,
-  "top1_top2_gap": 0.003963011889035695,
-  "top1_top4_spread": 0.005944517833553542,
-  "verdict": "READABLE"
+  "generated_by": "case-studies/chaosnli-noise-floor/audit_chaosnli.py"
 }

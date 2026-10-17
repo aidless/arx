@@ -1,0 +1,333 @@
+{
+  "audits": {
+    "human": {
+      "chance_level": 0.3333333333333333,
+      "floor_estimate": 0.7467399999999997,
+      "floor_source": "human",
+      "floor_vs_chance": {
+        "above_chance": true,
+        "critical_z": 1.9599639845400536,
+        "n_items": 1000,
+        "n_items_needed": 5,
+        "note": "5 items would put this floor above chance at alpha=0.05",
+        "se": 0.014907119849998597,
+        "z": 27.732162270547878
+      },
+      "leader_score": 0.789,
+      "leader_system": "albert-xxlarge",
+      "margin": 0.0422600000000003,
+      "mde": 0.03212404311266055,
+      "mde_method": "cluster_bootstrap",
+      "n_generators": 100,
+      "reasons": [],
+      "verdict": "READABLE"
+    },
+    "llm_judge_panel": {
+      "chance_level": 0.3333333333333333,
+      "floor_estimate": 0.86596875,
+      "floor_source": "llm_judge_panel",
+      "floor_vs_chance": {
+        "above_chance": true,
+        "critical_z": 1.9599639845400536,
+        "n_items": 1000,
+        "n_items_needed": 4,
+        "note": "4 items would put this floor above chance at alpha=0.05",
+        "se": 0.014907119849998597,
+        "z": 35.730269966717735
+      },
+      "leader_score": 0.789,
+      "leader_system": "albert-xxlarge",
+      "margin": -0.07696874999999992,
+      "mde": 0.03212404311266055,
+      "mde_method": "cluster_bootstrap",
+      "n_generators": 32,
+      "reasons": [
+        "leader albert-xxlarge (0.7890) is at or below the measured noise floor (0.8660)"
+      ],
+      "verdict": "UNREADABLE"
+    }
+  },
+  "board": [
+    {
+      "accuracy": 0.789,
+      "system": "albert-xxlarge"
+    },
+    {
+      "accuracy": 0.786,
+      "system": "bart-large"
+    },
+    {
+      "accuracy": 0.785,
+      "system": "roberta-large"
+    },
+    {
+      "accuracy": 0.779,
+      "system": "xlnet-large"
+    },
+    {
+      "accuracy": 0.755,
+      "system": "roberta-base"
+    },
+    {
+      "accuracy": 0.743,
+      "system": "xlnet-base"
+    },
+    {
+      "accuracy": 0.738,
+      "system": "bert-base"
+    },
+    {
+      "accuracy": 0.738,
+      "system": "bert-large"
+    },
+    {
+      "accuracy": 0.71,
+      "system": "distilbert"
+    }
+  ],
+  "generated_by": "case-studies/chaosnli-noise-floor/audit_judge_panel.py",
+  "human_floor_across_seeds": [
+    0.7467400000000001,
+    0.74674,
+    0.7467399999999997
+  ],
+  "human_floor_seed_spread": 3.3306690738754696e-16,
+  "judge_accuracy_vs_human_majority": {
+    "doubao18": 0.788,
+    "doubao20pro": 0.836,
+    "dsv32": 0.712,
+    "dsv4flash": 0.788,
+    "dsv4pro": 0.817,
+    "gem25pro": 0.798,
+    "gem31pro": 0.853,
+    "gem36flash": 0.844,
+    "gem37flash": 0.836,
+    "glm5": 0.825,
+    "glm51": 0.845,
+    "glm52": 0.836,
+    "glm53": 0.834,
+    "gpt41": 0.797,
+    "gpt54": 0.806,
+    "gpt56sol": 0.736,
+    "gpt56terra": 0.748,
+    "grok45": 0.822,
+    "grok46": 0.833,
+    "haiku45": 0.74,
+    "kimik25": 0.79,
+    "kimik26": 0.798,
+    "kimik27code": 0.819,
+    "kimik3": 0.837,
+    "minimaxm3": 0.77,
+    "o4mini": 0.818,
+    "opus5": 0.853,
+    "qwen35plus": 0.839,
+    "qwen37plus": 0.853,
+    "qwen38max": 0.848,
+    "qwen3max": 0.834,
+    "sonnet46": 0.816
+  },
+  "judge_file_provenance": {
+    "doubao18": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "d71e1dad0d4d1ec12bba36c54bcfab65aa054a659755e4568e80b93ccdeae2fc",
+      "votes_used": 1000
+    },
+    "doubao20pro": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "ac76c74ecef883264d25cfdf11aa524d2b78b78535629213b7a9886f3d69678f",
+      "votes_used": 1000
+    },
+    "dsv32": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "37f3dd403d33ef8e07d7d0cc24739e32e29037f65d3b8c5b14ae1baa6850727a",
+      "votes_used": 1000
+    },
+    "dsv4flash": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "17a5b956ab4109fee1f2038dd548f35cd25d499b4858d19f63574af660a24df4",
+      "votes_used": 1000
+    },
+    "dsv4pro": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "67ba4c9c807362ab24fe15321740bb358db5b25d8d7131a0572ce780f7257ed2",
+      "votes_used": 1000
+    },
+    "gem25pro": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "99f181efe310decfe106ca2f910fb6746418767fa0f55913dbbbca2676ba710d",
+      "votes_used": 1000
+    },
+    "gem31pro": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "8726572503e8851d4f901c3d306d0ea60416ec3b4864d41593247f2cb58f7600",
+      "votes_used": 1000
+    },
+    "gem36flash": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "4bd64dc64831c5d4c59bedd79a1ec56adf88c334fbe3e3c26dcc23d948914fb2",
+      "votes_used": 1000
+    },
+    "gem37flash": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "bee8577973ff1445cf8383fb79adadc442b7a1b9d05a59630562435be6c6f6c0",
+      "votes_used": 1000
+    },
+    "glm5": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "bb7a6ef3c2259cfc164e4a403484f4570fc03349decea3f41d8298666d0592b8",
+      "votes_used": 1000
+    },
+    "glm51": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "8d4013795f30fc9f39445c1e5763fce4abc04fc0873dfae6252c461d9449a8eb",
+      "votes_used": 1000
+    },
+    "glm52": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "27651aad63f65ec900642ad554d61ef5c8157a916f3cb7557773e112acbbf056",
+      "votes_used": 1000
+    },
+    "glm53": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "de8cea257ff1d4a3a321367669bd0d7f0aefd0dafd144ce1f95ec32edb43d8aa",
+      "votes_used": 1000
+    },
+    "gpt41": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "32b57a91209af4ad0b408d3c4e680885d25e8c38deca499678e456e0d8cd5a81",
+      "votes_used": 1000
+    },
+    "gpt54": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "e021c91e6278afe366a19e73a88063afbfd4f66c86bd063e9daddd05fb6f1841",
+      "votes_used": 1000
+    },
+    "gpt56sol": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "3b415963925bd4e68ce4d93d86b09adc1d5c061550bf7bd46e0cc8212c4a4aaa",
+      "votes_used": 1000
+    },
+    "gpt56terra": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "ef74e512934a4cac9620fb744f3ff07a4fa52963a435bb1d46df708c336557e8",
+      "votes_used": 1000
+    },
+    "grok45": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "c270ce07f82eebf9da0a99f1876c2a91edb7266b6e226c3e278377cccf088e58",
+      "votes_used": 1000
+    },
+    "grok46": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "ecf57be6b193ea2d3a671ced9c7ca753d71a9907bcd4831903445bfcabfacbab",
+      "votes_used": 1000
+    },
+    "haiku45": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "c15006866e456601f7f2f9b245d6cc55615672c8fab94b17639e436b748c9ed2",
+      "votes_used": 1000
+    },
+    "kimik25": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "a3e9c5929d8b080856074f04645344855eadec9fcc01ae00ba5372055f69b952",
+      "votes_used": 1000
+    },
+    "kimik26": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "c43692ea9268691b2fe79aebf69c2f57301fee2b71e49f2f243b48bfa4fb5582",
+      "votes_used": 1000
+    },
+    "kimik27code": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "d2bb70210df3d38ffd55bde171d9bb1a30b20759b8495910e5cb569114aad0b2",
+      "votes_used": 1000
+    },
+    "kimik3": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "ecd31e8ef317969f3a23e14e39238088d7df05279ab861bebf224e3cae1f287f",
+      "votes_used": 1000
+    },
+    "minimaxm3": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "1387a8d773954fa3fb6dc227fc684c0e42ef2913c7630df9518e6f9cc29a105c",
+      "votes_used": 1000
+    },
+    "o4mini": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "f5d5c7b7827a64eb7e73b4502b193f8ddfcc2056142bda7e3bdff14728eea40c",
+      "votes_used": 1000
+    },
+    "opus5": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "dcdbb776807abeb235ead0a8842cce4b510d5d2d406a224a260c0617d94338cb",
+      "votes_used": 1000
+    },
+    "qwen35plus": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "6b90c90c73e3b20eaf823a508eea086880ff425d834dc1083ef748a90864a9d4",
+      "votes_used": 1000
+    },
+    "qwen37plus": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "9580dcb0841ba794c1bb8e853e84ff9c3127b53fce0071778dd7c760d336719d",
+      "votes_used": 1000
+    },
+    "qwen38max": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "7f275a979b9599d87bd0244f7dd8e1507ce4ff5ca341a3be00eb03a1eb0f962a",
+      "votes_used": 1000
+    },
+    "qwen3max": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "3a0967515f63e68744b8347b4aa2ef2a8d572433f7b62d780274f127f6fa4a96",
+      "votes_used": 1000
+    },
+    "sonnet46": {
+      "abstentions": 0,
+      "parse_fail": 0,
+      "sha256": "30d4e1d937f257012cfa109b21f805cb68533cc79f53dbf56edc759a9b6d894e",
+      "votes_used": 1000
+    }
+  },
+  "n_items": 1000,
+  "panel_loo_floor_diagnostic": 0.86596875,
+  "panel_release": {
+    "caveat": "backend identity/version is not independently authenticated (quoted from the release's own panel manifest)",
+    "manifest_dataset_id": "chaosnli-snli-1000",
+    "panel_id": null,
+    "repo": "Chao1208/32judges-votes",
+    "uids_sha256": "f0e5bea82f6d674d7e689488bb732f3a010e5c9b7176fdbe0093ffcd1928c209"
+  },
+  "panel_size": 32
+}

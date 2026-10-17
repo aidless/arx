@@ -124,15 +124,21 @@ makes the classical tools necessary rather than optional:
   all. A high number with weak theories is still weak science, and the report
   says so.
 
-## Case study: the gate on a real leaderboard
+## Case study: the gate on real leaderboards
 
 [`case-studies/chaosnli-noise-floor/`](case-studies/chaosnli-noise-floor/) runs
-the gate on ChaosNLI-S — 1,514 items, 100 human annotations each, nine
-checkpoints with published per-item predictions. The leader clears the floor
-(`READABLE`: margin 0.0383 against an MDE of 0.0203). The top four systems sit
-within 0.0059 of each other, **0.3x that bound** — the verdict is about the
-leader, and the ranking below it is not resolvable. The report says exactly
-that, in English and Chinese.
+the gate on all three ChaosNLI components — 4,645 items between them, 100 human
+annotations each, nine checkpoints with published per-item predictions. The gate
+returns `READABLE` once and `UNREADABLE` twice, and on both refusals the
+**leader itself** sits at or below the floor. On the one readable board the top
+four systems are within **0.29x** of the minimum detectable effect, so the
+verdict is about the leader and says nothing about the ranking under it.
+
+A second script holds that board fixed and swaps **only the label producer**.
+With 100 humans as the floor the board is `READABLE` (margin +0.0423); with 32
+named LLM judges as the floor, the same nine models on the same 1,000 items are
+`UNREADABLE` (margin −0.0770). A noise floor is a property of who produced the
+labels, not of the board.
 
 That directory also records why a current LLM leaderboard was checked first and
 rejected: AlpacaEval 2.0 publishes no per-item human labels, and its five public

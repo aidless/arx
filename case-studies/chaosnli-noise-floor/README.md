@@ -1,184 +1,207 @@
-# Case study: ChaosNLI-S, and what a rank gap is worth
+# Case study: ChaosNLI, and what a rank gap is worth
 
-**Finding.** The top model on ChaosNLI-S is genuinely above the noise floor of
-its own labels. The ranking *below* it is not: the top four systems sit within
-0.6 percentage points of each other, against a resolution bound of 2.03
-percentage points. The leader is readable; the leaderboard around it is not.
+Two audits, on real data, both reproducible from this directory.
 
-This is `arx`'s central claim run on real data instead of on a worked example.
+**Finding 1 — three boards, three verdicts, two refusals.** On the three
+ChaosNLI components the same gate returns `READABLE` once and `UNREADABLE`
+twice. On both refusals the *leader itself* sits at or below the noise floor of
+the labels it was measured against — no model on those boards beats what one
+human annotator reproduces from the other 99.
 
-| | |
-|---|---|
-| dataset | ChaosNLI-S (1,514 items, 100 human annotations each) |
-| contestants | 9 transformer checkpoints, per-item predictions published |
-| gold floor | leave-one-out agreement of 100 expanded annotators = **0.7484** |
-| chance level | 0.3333 |
-| leader | `roberta-large` = **0.7867** |
-| margin over floor | **0.0383** |
-| MDE (paired, cluster bootstrap) | **0.0203** |
-| **verdict** | **`READABLE`** — no refusals |
+**Finding 2 — a floor is a property of who produced the labels, not of the
+board.** The same nine checkpoints, the same 1,000 items, the same margin. Swap
+the floor's producer from 100 humans to 32 named LLM judges and the verdict
+inverts: `READABLE` becomes `UNREADABLE`, because an LLM panel agrees with
+itself (0.8660) far more than any model in the board achieves (best 0.7890).
 
-## Two readings, and only one of them is the verdict
+This is `arx`'s central claim — *a leaderboard's rank difference is readable
+only if it exceeds the noise floor of the labels it was measured against* — run
+on data instead of on a worked example.
 
-The gate returns `READABLE`. Read that carefully, because it is a narrow claim:
+## Audit 1: the three components
 
-1. **The leader clears the floor.** `roberta-large` is 3.83 points above the
-   level a single human annotator reproduces from the other 99. The smallest
-   difference this apparatus could detect is 2.03 points. 0.0383 > 0.0203, so
-   the leader's position is not an artefact of the label noise.
-2. **The ranking inside that board is not resolvable.** First to second is
-   **0.0040** — **0.2x the MDE**. First to fourth is **0.0059** — **0.3x**.
-   Four systems that a leaderboard renders as ordered ranks are, by this
-   measurement, indistinguishable.
+| component | task | n | floor | leader | leader acc | margin | MDE | verdict |
+|---|---|---:|---:|---|---:|---:|---:|---|
+| `snli` | 3-way | 1,514 | 0.7484 | roberta-large | 0.7867 | **+0.0383** | 0.0203 | `READABLE` |
+| `mnli_m` | 3-way | 1,599 | 0.6416 | roberta-large | 0.6354 | **−0.0062** | 0.0255 | `UNREADABLE` |
+| `alphanli` | 2-way | 1,532 | 0.8786 | albert-xxlarge | 0.8473 | **−0.0313** | 0.0238 | `UNREADABLE` |
 
-`READABLE` is a statement about the *leader against the floor*. It says nothing
-about places two through four, and the numbers above are what that gap looks
-like. A board that prints "1. roberta-large, 2. bart-large" without this
-bound is printing a ranking the data cannot support.
+The two refusals are refusals of the form arx is built to produce. `mnli_m`'s
+leader is 0.62 points *below* the floor; `alphanli`'s is 3.13 points below it.
+The gate prints the leader's own accuracy next to the floor it failed to clear,
+so the reader can see the number rather than a hedge.
 
-## The board
+And even where the gate says `READABLE`, it says nothing about the ranking
+underneath. The top-to-second gaps against the resolution bound:
 
-Accuracy against the majority human label, all 1,514 items, identical item set
-for every system and for the floor:
+| component | top1–top2 | as × MDE | top1–top4 | as × MDE |
+|---|---:|---:|---:|---:|
+| `snli` | 0.0040 | **0.19x** | 0.0059 | **0.29x** |
+| `mnli_m` | 0.0169 | 0.66x | 0.0432 | 1.69x |
+| `alphanli` | 0.0104 | 0.44x | 0.0339 | 1.43x |
 
-| rank | system | accuracy |
-|---:|---|---:|
-| 1 | roberta-large | 0.7867 |
-| 2 | bart-large | 0.7827 |
-| 3 | albert-xxlarge | 0.7814 |
-| 4 | xlnet-large | 0.7807 |
-| 5 | roberta-base | 0.7536 |
-| 6 | bert-large | 0.7384 |
-| 7 | xlnet-base | 0.7365 |
-| 8 | bert-base | 0.7292 |
-| 9 | distilbert | 0.7021 |
+On `snli` — the one board that is readable — the top four systems are within
+**0.29x** of the smallest difference the apparatus can detect. `READABLE` is a
+statement about the leader against the floor. Four systems a leaderboard renders
+as ordered ranks are, by this measurement, indistinguishable.
 
-## How the floor is built, and the one modelling step
+## Audit 2: hold the board fixed, swap the floor
 
-The stage is set by ChaosNLI itself: 100 human annotations per item, so the
-labels have a measurable, published noise floor rather than an assumed one.
+Same nine checkpoints, same 1,000-item subsample of ChaosNLI-S, same
+`per_item_scores`, same declared delta. Only the label producers change:
 
-The public release publishes each item's vote **counts** — a 3-vector summing
-to 100 — and **not** worker identities. A `(generators x items)` matrix
-therefore cannot be read off the file, so the audit script expands each item's
-counts into 100 exchangeable pseudo-annotators with a seeded shuffle.
+| floor source | floor | leader | leader acc | margin | MDE | verdict |
+|---|---:|---|---:|---:|---:|---|
+| 100 human annotations (expanded) | 0.7467 | albert-xxlarge | 0.7890 | **+0.0423** | 0.0321 | `READABLE` |
+| 32 named LLM judges (real identities) | 0.8660 | albert-xxlarge | 0.7890 | **−0.0770** | 0.0321 | `UNREADABLE` |
 
-That is a derived quantity, not a measured one, and it is labelled as such
-here. Every assignment consistent with the released counts is equally likely
-given those counts, so the leave-one-out floor it produces is a draw of "how
-often one annotator reproduces the majority of the other 99". Repeating the
-expansion under three seeds moves the floor by **1.1e-16** — the construction
-is stable rather than assumed to be.
+Both floors satisfy every premise the gate checks: the producers are disjoint
+from the contestants (humans or judges, versus checkpoints), and both are
+computed on the board's own item set.
 
-Two further things the gate checked and did not refuse:
+The panel release's own numbers, for context:
 
-* **actor-disjointness** — the floor is produced by human annotators, the board
-  by models. The two sets are disjoint.
-* **common denominator** — every one of the nine systems has predictions on
-  all 1,514 items, and the floor is computed on that same set. `n_floor_items`
-  is not a subset of the board's items; it is the board's item set.
+* LOO agreement **among the 32 judges** is 0.8660 — quoted here as a diagnostic,
+  because the panel cannot be both the judge set and the contestant set. The
+  gate refuses that, correctly.
+* The best individual judge (`gem31pro`) reaches 0.8530 against the human
+  majority — **still below the panel's collective 0.8660**. Median 0.8205,
+  worst 0.7120 (`dsv32`).
+
+So the ranking is not readable *or* unreadable in the abstract. It is readable
+against human-produced labels and unreadable against model-produced labels, on
+identical evidence. Anyone who reports "the leaderboard says model X is best"
+without naming which floor the claim rests on has left out the half of the
+sentence that decides it.
+
+One more piece of evidence for the same point, from audit 1: the leader on the
+1,000-item subsample is `albert-xxlarge`, while on all 1,514 items it is
+`roberta-large`. The top of this board does not survive a change of sample
+size either.
+
+## How the human floor is built, and the one modelling step
+
+The public ChaosNLI release publishes each item's vote **counts** — a 2- or
+3-vector summing to 100 — and **not** worker identities, so a
+`(generators x items)` matrix cannot be read off the file. The audit script
+expands each item's counts into 100 exchangeable pseudo-annotators with a
+seeded shuffle.
+
+That is a derived quantity, not a measured one, and it is labelled as such.
+Every assignment consistent with the released counts is equally likely given
+those counts, so the leave-one-out floor it produces is a draw of "how often
+one annotator reproduces the majority of the other 99". Repeating the expansion
+under three seeds moves the floor by **at most 2.2e-16** — the construction is
+stable rather than assumed to be.
+
+The judge floor needs no such step: the panel release carries one vote per item
+per judge, with the judge named.
 
 ## Sources, with hashes
 
-The script downloads at run time, verifies SHA-256, and keeps the raw files out
-of the repository — ChaosNLI is CC-BY-NC-4.0 and is not redistributed here.
+Both scripts download at run time, verify SHA-256, and keep the raw files out of
+the repository. ChaosNLI is CC-BY-NC-4.0 and is not redistributed here.
 
 | what | where | SHA-256 |
 |---|---|---|
-| annotations | HF mirror `earino/chaosnli`, `raw/chaosNLI_snli.jsonl` | `99f9015ddda7d85f66a087452bc30d53974314fe27e7d589e2f41ad44bd509c1` |
-| model predictions | vendored copy of the upstream release in `TheGuy-26/chaosnli-deberta-modernbert` | `7c788bb9df6917f56a99a3bbf19c307bf2d02ad14d8f02537338b7bfb629bb53` |
+| ChaosNLI-S annotations | HF mirror `earino/chaosnli`, `raw/chaosNLI_snli.jsonl` | `99f9015d…` |
+| ChaosNLI-M annotations | same mirror, `raw/chaosNLI_mnli_m.jsonl` | `8eb49b58…` |
+| ChaosNLI-α annotations | same mirror, `raw/chaosNLI_alphanli.jsonl` | `f55817ec…` |
+| 9-model per-item predictions | vendored copy of the upstream release, `TheGuy-26/chaosnli-deberta-modernbert` | `7c788bb9…` |
+| αNLI per-item predictions | same vendored copy | `58ced70a…` |
+| 32-judge panel votes | `Chao1208/32judges-votes`, `datasets/chaosnli-snli-1000/` | no published hash; first-seen hashes recorded per file in `results_judge_panel.json` |
+| panel item list (1,000 uids) | same release, `items/uids.txt` | `f0e5bea8…` (matches the release's own manifest) |
 
-Two caveats worth stating plainly rather than burying:
+Three caveats, stated plainly rather than buried:
 
 * **The model predictions are a mirror, not upstream.** The upstream
   `scripts/download_data.sh` points at a Dropbox zip; that URL answered with an
-  HTML interstitial when this was run, so the copy above is a third-party
-  vendored one. The annotations' hash matches the value recorded in the
-  mirror's own audit file, and the script re-checks it rather than trusting it.
-* **These are 2019-era checkpoints, not LLMs.** BERT/XLNet/RoBERTa-family
-  encoders. The subject of the audit is the *apparatus* — 100 human labels with
-  a measurable floor — and the gate is indifferent to which models are ranked.
-  The same script runs unchanged on an LLM board that publishes per-item
-  labels from multiple independent producers. See the note below on why no
-  current LLM leaderboard was used instead.
+  HTML interstitial when this was run. The annotations' hashes match the values
+  recorded in the mirror's own audit file, and both scripts recompute them
+  rather than trusting that file.
+* **The judge panel's backend is not independently authenticated.** That is the
+  release's own caveat, quoted from `panel-chaosnli.json`: the model strings are
+  what was requested, not necessarily what served the request. It bounds what
+  finding 2 can mean — the panel's *agreement level* is measured here, its
+  *identity* is taken on trust.
+* **These are 2019-era checkpoints, not LLMs.** The subject of audit 1 is the
+  apparatus — 100 human labels with a measurable floor. The gate is indifferent
+  to which models are ranked, which is why audit 2 could hold the board fixed
+  and move only the floor.
 
 ## Reproduce
 
 ```bash
-python3 audit_chaosnli.py --config snli      # downloads, verifies, audits
-python3 audit_chaosnli.py --config mnli_m    # the companion 1,599-item board
-python3 audit_chaosnli.py --offline          # reuse whatever is in _data/
+python3 audit_chaosnli.py                     # all three components
+python3 audit_judge_panel.py                  # the two-floor comparison
+python3 audit_chaosnli.py --offline           # reuse whatever is in _data/
 ```
 
-Committed output is in [`results.json`](results.json); it is what the run above
-prints. `--seeds` controls how many times the count expansion is repeated.
+Committed output: [`results.json`](results.json) (audit 1) and
+[`results_judge_panel.json`](results_judge_panel.json) (audit 2). `_data/` is
+git-ignored.
 
-## What this does not establish
+## What these do not establish
 
-* It does not say `roberta-large` is a better model. It says this measurement
-  can resolve its position over the floor, and it does not affect the models
-  below it.
-* It does not say the human majority is ground truth. ChaosNLI exists precisely
-  because it is not: 14 items here have no majority at all, and the mean
+* They do not say which checkpoint is the better model. They say whether this
+  measurement could resolve the difference, and on two of three boards it could
+  not.
+* They do not say the human majority is ground truth. ChaosNLI exists precisely
+  because it is not: 14 items in `snli` have no majority at all, and the mean
   majority share is 0.755.
-* It does not transfer to a board that publishes only aggregate scores. A floor
-  needs per-item labels from independent producers; without them the
-  apparatus cannot be checked at all.
+* They do not transfer to a board that publishes only aggregate scores. A floor
+  needs per-item labels from independent producers; without them the apparatus
+  cannot be checked at all.
 
 ### Why not AlpacaEval
 
-The obvious target for this audit was a current LLM leaderboard. The AlpacaEval
-2.0 data was downloaded and checked, and it does not satisfy the gate's
-premises:
+The obvious target was a current LLM leaderboard. The AlpacaEval 2.0 data was
+downloaded and checked, and it fails the gate's premises:
 
 * its per-item **human** labels are not published — only an aggregate `Human
   agreement` column (e.g. `alpaca_eval_gpt4_fn` = 70.99%);
-* its five public evaluators are four prompt variants of the same GPT-4 plus
-  one Claude run that covers a single model, so a leave-one-out floor over them
-  would measure GPT-4's self-consistency, not an inter-annotator noise floor;
-* two of those variants (`alpaca_eval_cot_gpt4_turbo_fn`,
-  `weighted_alpaca_eval_gpt4_turbo`) agree on **805 of 805** items — they are
-  one judge run, not two producers;
+* its five public evaluators are four prompt variants of the same GPT-4 plus one
+  Claude run covering a single model, so a leave-one-out floor over them would
+  measure GPT-4's self-consistency, not an inter-annotator noise floor;
+* two of those variants agree on **805 of 805** items — one judge run, not two
+  producers;
 * the ranked contestant set includes `gpt4` and `gpt-3.5-turbo-0301` while the
-  judges are GPT-4-family, which is an actor-disjointness violation.
+  judges are GPT-4-family, an actor-disjointness violation.
 
-The denominators were fine — the three evaluators cover exactly the same 805
-items — so the failure is not a mismatched item set. It is that the labels have
-no independent producers to build a floor from. Recording that is itself a
-result: it is the check this gate exists to perform, and it is why the audit
-below rests on a dataset that publishes 100 independent human annotations per
-item.
+The denominators were fine (the three evaluators cover exactly the same 805
+items), so the failure is not a mismatched item set — it is that the labels have
+no independent producers to build a floor from. That is itself the check this
+gate exists to perform.
 
 ---
 
 # 中文部分
 
-**结论**：ChaosNLI-S 榜首位置是可信的，**但榜首以下的排名不可信**。
+**结论一：三个组件，三个判决，两次拒绝。** 同一道门在 ChaosNLI 三个组件上给出 1 次 `READABLE`、2 次 `UNREADABLE`；两次拒绝中，**榜首本身就在它被测的那个标签噪声地板之下**——那些 board 上没有任何模型比「一个人类标注者复现其余 99 人的多数意见」更强。
 
-| | |
-|---|---|
-| 数据集 | ChaosNLI-S（1,514 例，每例 100 个人工标注） |
-| 参赛者 | 9 个 transformer 检查点，逐项预测公开 |
-| 标签噪声地板 | 100 个展开标注者的 leave-one-out 一致率 = **0.7484** |
-| 随机水平 | 0.3333 |
-| 榜首 | `roberta-large` = **0.7867** |
-| 高出地板 | **0.0383** |
-| MDE（配对，cluster bootstrap） | **0.0203** |
-| **verdict** | **`READABLE`**，无任何拒绝理由 |
+| 组件 | 任务 | n | 地板 | 榜首 | 榜首准确率 | margin | MDE | verdict |
+|---|---|---:|---:|---|---:|---:|---:|---|
+| `snli` | 3 类 | 1,514 | 0.7484 | roberta-large | 0.7867 | **+0.0383** | 0.0203 | `READABLE` |
+| `mnli_m` | 3 类 | 1,599 | 0.6416 | roberta-large | 0.6354 | **−0.0062** | 0.0255 | `UNREADABLE` |
+| `alphanli` | 2 类 | 1,532 | 0.8786 | albert-xxlarge | 0.8473 | **−0.0313** | 0.0238 | `UNREADABLE` |
 
-**必须分开读的两条结论**：arx 判 `READABLE`，它是一个很窄的断言——① 榜首的 0.0383 高出地板、且大于该装置的最小可检测差 0.0203，所以榜首位置不是标签噪声造成的；② **但前四名的差距只有 0.0059，仅为 MDE 的 0.3 倍**（第一名 vs 第二名仅 0.0040，0.2 倍）。四个被榜单渲染成「有序名次」的系统，在这次测量下**无法区分**。
+而且即便判 `READABLE`，它对**下层的排名什么都没说**：`snli` 上第一名到第四名合计只差 **0.0059，仅为 MDE 的 0.29 倍**。四个被榜单渲染成「有序名次」的系统，在这次测量下无法区分。
 
-`READABLE` 是关于「榜首与地板」的断言，它对第 2～4 名什么都没说——而上面的数字就是那个「没说」的样子。一个只印「1. roberta-large、2. bart-large」却不给这个分辨率下界的榜单，印的是一个数据支撑不了的排名。
+**结论二：地板是「谁产生的标签」的属性，不是 board 的属性。** 固定同一张 9 模型 board、同一批 1,000 个 item、同一个 margin，只把地板的产生者从 100 个人类换成 32 个具名 LLM 判官，判决直接翻转——`READABLE` 变 `UNREADABLE`。原因是 LLM 面板自我一致率（0.8660）远高于 board 里任何模型的成绩（最好 0.7890）。
 
-**地板的构造（唯一一处建模步骤，已明示）**：ChaosNLI 公开发布的是每例的**投票计数**（3 维向量、和为 100），**不含标注者身份**，所以无法直接读出 `(生成器 × item)` 矩阵。脚本按每个 item 的计数做**种子化随机展开**成 100 个可交换的伪标注者。这是**派生量、不是实测量**，本报告据实标注：与已发布计数一致的任何指派在给定计数下等概率，因此得到的 LOO 地板是「一个标注者复现其余 99 人多数意见的频率」的一次抽样。三个种子下地板变动 **1.1e-16**，构造是稳定的，不是假定的。
+| floor 来源 | floor | 榜首 | 准确率 | margin | MDE | verdict |
+|---|---:|---|---:|---:|---:|---|
+| 100 个人类标注（展开） | 0.7467 | albert-xxlarge | 0.7890 | **+0.0423** | 0.0321 | `READABLE` |
+| 32 个具名 LLM 判官（真身份） | 0.8660 | albert-xxlarge | 0.7890 | **−0.0770** | 0.0321 | `UNREADABLE` |
 
-**来源与哈希**（脚本运行时下载并校验 SHA-256；ChaosNLI 为 CC-BY-NC-4.0，本仓不重分发原始数据）：
+补充诊断：**32 个判官内部**的 LOO 一致率 = 0.8660（只作诊断——把面板同时当作判官集与参赛者集属于 actor-disjointness 违反，门会拒绝，这是正确的）；最好的单个判官 `gem31pro` 对人类多数票达 0.8530，**仍低于面板集体的 0.8660**；中位 0.8205，最差 `dsv32` 0.7120。
 
-- 标注：HF 镜像 `earino/chaosnli` 的 `raw/chaosNLI_snli.jsonl`，SHA-256 = `99f9015d…`
-- 模型预测：`TheGuy-26/chaosnli-deberta-modernbert` 里 vendored 的上游发布副本，SHA-256 = `7c788bb9…`
+所以这张榜单不是「抽象地可读或不可读」：在人类产生的标签下可读，在模型产生的标签下不可读，证据完全相同。任何只报「榜单说 X 模型最好」而不说明这个判断建立在哪个地板上的人，都漏掉了决定它的那半句话。
 
-**两点需明说的保留**：① 模型预测来自**第三方镜像**——上游 `download_data.sh` 指向的 Dropbox 链接在本次执行时返回 HTML 拦截页；标注的哈希与镜像自带审计文件记载一致，且脚本是重新校验而非采信。② 这 9 个模型是 **2019 年代的编码器，不是 LLM**；本审计的对象是**装置**（100 个人工标注及其可测地板），与所排名的模型无关，同一脚本可原样跑在「发布多独立生产者逐项标签」的 LLM 榜单上。
+另一个同向证据：在 1,000 子样本上榜首是 `albert-xxlarge`，而在全部 1,514 例上是 `roberta-large`——这张榜单的顶端**连样本量变化都扛不住**。
 
-**不成立的推论**：本审计不说 `roberta-large` 是更好的模型；不说人类多数票是标准答案（14 例根本无多数，平均多数占比 0.755）；也不适用于只发布聚合分数的榜单——地板需要独立生产者的逐项标签，缺了它装置根本无法被检验。
+**地板的构造（唯一一处建模步骤，已明示）**：ChaosNLI 公开发布的是每例**投票计数**（2 或 3 维、和为 100），不含标注者身份。脚本按每个 item 的计数做**种子化随机展开**成 100 个可交换的伪标注者；这是**派生量而非实测量**，三个种子下地板变动不超过 **2.2e-16**。判官地板**不需要**这一步——面板发布的是每个判官每 item 一条具名投票。
 
-**为什么不用 AlpacaEval**：曾下载核对过。它的**逐项人类标签未发布**（只有聚合的 `Human agreement = 70.99%`）；5 个公开判官是同一 GPT-4 的 4 个提示变体 + 1 个仅覆盖单模型的 Claude 运行，据此算 LOO 地板只会测出 GPT-4 的自我一致性，而非标注者间噪声；其中两个变体在 **805/805** 个 item 上判定完全相同（同一次判官运行）；且被排名的 `gpt4`、`gpt-3.5-turbo-0301` 与 GPT-4 家族判官构成 actor-disjointness 违反。分母本身没问题（三个判官恰好覆盖同一批 805 项），失败在于**标签没有独立生产者**可供构造地板。把这个记下来本身就是一个结果。
+**来源与哈希**：ChaosNLI 三个组件标注分别为 `99f9015d…` / `8eb49b58…` / `f55817ec…`（HF 镜像 `earino/chaosnli`）；9 模型与 αNLI 逐项预测分别为 `7c788bb9…` / `58ced70a…`（`TheGuy-26` 里 vendored 的上游副本）；判官投票来自 `Chao1208/32judges-votes`（无公开哈希，每文件的**首见哈希**记在 `results_judge_panel.json`）；面板 item 列表哈希 `f0e5bea8…` 与其 manifest 记载一致。原始数据一律不入库（ChaosNLI 为 CC-BY-NC-4.0），脚本运行时下载并校验。
+
+**三点保留**：① 模型预测来自**第三方镜像**，上游 Dropbox 链接在本次执行时返回 HTML 拦截页；标注哈希与镜像自带审计文件记载一致，且脚本是重新校验而非采信。② **判官面板的后端未经独立认证**——这是发布方自己的 caveat（引自 `panel-chaosnli.json`）：模型字符串是「请求的」而非「应答的」。这限定了结论二的含义：这里测的是面板的**一致水平**，其**身份**是采信的。③ 这 9 个模型是 **2019 年代的编码器，不是 LLM**；审计对象是**装置**，这正是结论二能「固定 board、只换地板」的原因。
