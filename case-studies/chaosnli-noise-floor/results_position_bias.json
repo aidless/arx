@@ -1,0 +1,497 @@
+{
+  "board_on_swap_items": [
+    {
+      "accuracy": 0.766,
+      "system": "roberta-large"
+    },
+    {
+      "accuracy": 0.764,
+      "system": "albert-xxlarge"
+    },
+    {
+      "accuracy": 0.762,
+      "system": "xlnet-large"
+    },
+    {
+      "accuracy": 0.76,
+      "system": "bart-large"
+    },
+    {
+      "accuracy": 0.732,
+      "system": "roberta-base"
+    },
+    {
+      "accuracy": 0.716,
+      "system": "bert-large"
+    },
+    {
+      "accuracy": 0.712,
+      "system": "bert-base"
+    },
+    {
+      "accuracy": 0.708,
+      "system": "xlnet-base"
+    },
+    {
+      "accuracy": 0.67,
+      "system": "distilbert"
+    }
+  ],
+  "flip_rate_max": 0.158,
+  "flip_rate_median": 0.07100000000000001,
+  "generated_by": "case-studies/chaosnli-noise-floor/audit_position_bias.py",
+  "n_items": 500,
+  "n_variants": 3,
+  "note_from_release": "the release lists presentation-order analyses under 'Not covered', and states it establishes no same-prompt repeated-call noise floor; this is an order artefact, not a sampling floor",
+  "order_swing_max": 0.03400000000000003,
+  "order_swing_mean": 0.014111919119363221,
+  "order_swing_median": 0.011999999999999955,
+  "panel_sensitivity": {
+    "31 judges (release excludes dsv32)": {
+      "floor_human": 0.7395999999999999,
+      "floor_panel": 0.8693014011078526,
+      "n_judges": 31,
+      "panel_loo_floor": 0.8693014011078526,
+      "verdict_floor_human": "MARGINAL",
+      "verdict_floor_panel": "UNREADABLE"
+    },
+    "all 32 judges": {
+      "floor_human": 0.7395999999999999,
+      "floor_panel": 0.8616344696969698,
+      "n_judges": 32,
+      "panel_loo_floor": 0.8616344696969698,
+      "verdict_floor_human": "MARGINAL",
+      "verdict_floor_panel": "UNREADABLE"
+    }
+  },
+  "per_judge": [
+    {
+      "accuracy_by_variant": {
+        "0": 0.854,
+        "1": 0.82,
+        "2": 0.822
+      },
+      "accuracy_swing": 0.03400000000000003,
+      "flip_rate_vs_variant_0": 0.08,
+      "judge": "glm51",
+      "self_reproducibility_across_orders": 0.9086666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.732,
+        "1": 0.762,
+        "2": 0.764
+      },
+      "accuracy_swing": 0.03200000000000003,
+      "flip_rate_vs_variant_0": 0.141,
+      "judge": "gpt56sol",
+      "self_reproducibility_across_orders": 0.8586666666666667
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.788,
+        "1": 0.816,
+        "2": 0.812
+      },
+      "accuracy_swing": 0.027999999999999914,
+      "flip_rate_vs_variant_0": 0.051,
+      "judge": "doubao18",
+      "self_reproducibility_across_orders": 0.9460000000000001
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.718,
+        "1": 0.694,
+        "2": 0.704
+      },
+      "accuracy_swing": 0.02400000000000002,
+      "flip_rate_vs_variant_0": 0.1,
+      "judge": "dsv32",
+      "self_reproducibility_across_orders": 0.8886666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.848,
+        "1": 0.872,
+        "2": 0.854
+      },
+      "accuracy_swing": 0.02400000000000002,
+      "flip_rate_vs_variant_0": 0.035,
+      "judge": "gem31pro",
+      "self_reproducibility_across_orders": 0.9633333333333333
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.794,
+        "1": 0.77,
+        "2": 0.782
+      },
+      "accuracy_swing": 0.02400000000000002,
+      "flip_rate_vs_variant_0": 0.08,
+      "judge": "gpt54",
+      "self_reproducibility_across_orders": 0.9213333333333334
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.796,
+        "1": 0.79,
+        "2": 0.776
+      },
+      "accuracy_swing": 0.020000000000000018,
+      "flip_rate_vs_variant_0": 0.06,
+      "judge": "gpt41",
+      "self_reproducibility_across_orders": 0.9306666666666668
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.862,
+        "1": 0.842,
+        "2": 0.85
+      },
+      "accuracy_swing": 0.020000000000000018,
+      "flip_rate_vs_variant_0": 0.056,
+      "judge": "qwen38max",
+      "self_reproducibility_across_orders": 0.944
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.814,
+        "1": 0.814,
+        "2": 0.794
+      },
+      "accuracy_swing": 0.019999999999999907,
+      "flip_rate_vs_variant_0": 0.092,
+      "judge": "dsv4pro",
+      "self_reproducibility_across_orders": 0.8946666666666667
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.836,
+        "1": 0.832,
+        "2": 0.82
+      },
+      "accuracy_swing": 0.016000000000000014,
+      "flip_rate_vs_variant_0": 0.054,
+      "judge": "doubao20pro",
+      "self_reproducibility_across_orders": 0.9460000000000001
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.838,
+        "1": 0.854,
+        "2": 0.85
+      },
+      "accuracy_swing": 0.016000000000000014,
+      "flip_rate_vs_variant_0": 0.089,
+      "judge": "glm53",
+      "self_reproducibility_across_orders": 0.9086666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.836,
+        "1": 0.846,
+        "2": 0.85
+      },
+      "accuracy_swing": 0.014000000000000012,
+      "flip_rate_vs_variant_0": 0.042,
+      "judge": "gem36flash",
+      "self_reproducibility_across_orders": 0.952
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.732,
+        "1": 0.722,
+        "2": 0.718
+      },
+      "accuracy_swing": 0.014000000000000012,
+      "flip_rate_vs_variant_0": 0.158,
+      "judge": "haiku45",
+      "self_reproducibility_across_orders": 0.8613333333333334
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.834,
+        "1": 0.844,
+        "2": 0.83
+      },
+      "accuracy_swing": 0.014000000000000012,
+      "flip_rate_vs_variant_0": 0.124,
+      "judge": "kimik3",
+      "self_reproducibility_across_orders": 0.8886666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.818,
+        "1": 0.81,
+        "2": 0.804
+      },
+      "accuracy_swing": 0.013999999999999901,
+      "flip_rate_vs_variant_0": 0.083,
+      "judge": "gem25pro",
+      "self_reproducibility_across_orders": 0.9173333333333334
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.828,
+        "1": 0.824,
+        "2": 0.816
+      },
+      "accuracy_swing": 0.01200000000000001,
+      "flip_rate_vs_variant_0": 0.083,
+      "judge": "glm5",
+      "self_reproducibility_across_orders": 0.918
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.816,
+        "1": 0.806,
+        "2": 0.804
+      },
+      "accuracy_swing": 0.0119999999999999,
+      "flip_rate_vs_variant_0": 0.073,
+      "judge": "grok45",
+      "self_reproducibility_across_orders": 0.9386666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.834,
+        "1": 0.824,
+        "2": 0.83
+      },
+      "accuracy_swing": 0.010000000000000009,
+      "flip_rate_vs_variant_0": 0.037,
+      "judge": "gem37flash",
+      "self_reproducibility_across_orders": 0.9579999999999999
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.83,
+        "1": 0.84,
+        "2": 0.84
+      },
+      "accuracy_swing": 0.010000000000000009,
+      "flip_rate_vs_variant_0": 0.062,
+      "judge": "qwen35plus",
+      "self_reproducibility_across_orders": 0.9333333333333335
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.836,
+        "1": 0.826,
+        "2": 0.828
+      },
+      "accuracy_swing": 0.010000000000000009,
+      "flip_rate_vs_variant_0": 0.05,
+      "judge": "qwen3max",
+      "self_reproducibility_across_orders": 0.948
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.7797979797979798,
+        "1": 0.7715430861723447,
+        "2": 0.7811244979919679
+      },
+      "accuracy_swing": 0.009581411819623242,
+      "flip_rate_vs_variant_0": 0.1286727456940223,
+      "judge": "minimaxm3",
+      "self_reproducibility_across_orders": 0.8579157341090847
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.798,
+        "1": 0.796,
+        "2": 0.804
+      },
+      "accuracy_swing": 0.008000000000000007,
+      "flip_rate_vs_variant_0": 0.096,
+      "judge": "dsv4flash",
+      "self_reproducibility_across_orders": 0.902
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.834,
+        "1": 0.832,
+        "2": 0.84
+      },
+      "accuracy_swing": 0.008000000000000007,
+      "flip_rate_vs_variant_0": 0.1,
+      "judge": "glm52",
+      "self_reproducibility_across_orders": 0.9086666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.828,
+        "1": 0.82,
+        "2": 0.822
+      },
+      "accuracy_swing": 0.008000000000000007,
+      "flip_rate_vs_variant_0": 0.07,
+      "judge": "kimik27code",
+      "self_reproducibility_across_orders": 0.92
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.862,
+        "1": 0.854,
+        "2": 0.858
+      },
+      "accuracy_swing": 0.008000000000000007,
+      "flip_rate_vs_variant_0": 0.036,
+      "judge": "opus5",
+      "self_reproducibility_across_orders": 0.9666666666666667
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.846,
+        "1": 0.842,
+        "2": 0.85
+      },
+      "accuracy_swing": 0.008000000000000007,
+      "flip_rate_vs_variant_0": 0.047,
+      "judge": "qwen37plus",
+      "self_reproducibility_across_orders": 0.9553333333333333
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.752,
+        "1": 0.748,
+        "2": 0.754
+      },
+      "accuracy_swing": 0.006000000000000005,
+      "flip_rate_vs_variant_0": 0.128,
+      "judge": "gpt56terra",
+      "self_reproducibility_across_orders": 0.878
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.778,
+        "1": 0.778,
+        "2": 0.784
+      },
+      "accuracy_swing": 0.006000000000000005,
+      "flip_rate_vs_variant_0": 0.042,
+      "judge": "kimik25",
+      "self_reproducibility_across_orders": 0.9526666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.784,
+        "1": 0.778,
+        "2": 0.784
+      },
+      "accuracy_swing": 0.006000000000000005,
+      "flip_rate_vs_variant_0": 0.072,
+      "judge": "kimik26",
+      "self_reproducibility_across_orders": 0.9326666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.83,
+        "1": 0.832,
+        "2": 0.836
+      },
+      "accuracy_swing": 0.006000000000000005,
+      "flip_rate_vs_variant_0": 0.066,
+      "judge": "o4mini",
+      "self_reproducibility_across_orders": 0.9346666666666666
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.818,
+        "1": 0.812,
+        "2": 0.814
+      },
+      "accuracy_swing": 0.005999999999999894,
+      "flip_rate_vs_variant_0": 0.063,
+      "judge": "grok46",
+      "self_reproducibility_across_orders": 0.9466666666666667
+    },
+    {
+      "accuracy_by_variant": {
+        "0": 0.806,
+        "1": 0.808,
+        "2": 0.804
+      },
+      "accuracy_swing": 0.0040000000000000036,
+      "flip_rate_vs_variant_0": 0.064,
+      "judge": "sonnet46",
+      "self_reproducibility_across_orders": 0.9513333333333334
+    }
+  ],
+  "published_hash_check": {
+    "baseline": {
+      "doubao18": "ok",
+      "doubao20pro": "ok",
+      "dsv32": "ok",
+      "dsv4flash": "ok",
+      "dsv4pro": "ok",
+      "gem25pro": "ok",
+      "gem31pro": "ok",
+      "gem36flash": "ok",
+      "gem37flash": "ok",
+      "glm5": "ok",
+      "glm51": "ok",
+      "glm52": "ok",
+      "glm53": "ok",
+      "gpt41": "ok",
+      "gpt54": "ok",
+      "gpt56sol": "ok",
+      "gpt56terra": "ok",
+      "grok45": "ok",
+      "grok46": "ok",
+      "haiku45": "ok",
+      "kimik25": "ok",
+      "kimik26": "ok",
+      "kimik27code": "ok",
+      "kimik3": "ok",
+      "minimaxm3": "ok",
+      "o4mini": "ok",
+      "opus5": "ok",
+      "qwen35plus": "ok",
+      "qwen37plus": "ok",
+      "qwen38max": "ok",
+      "qwen3max": "ok",
+      "sonnet46": "ok"
+    },
+    "swap": {
+      "doubao18": "ok",
+      "doubao20pro": "ok",
+      "dsv32": "ok",
+      "dsv4flash": "ok",
+      "dsv4pro": "ok",
+      "gem25pro": "ok",
+      "gem31pro": "ok",
+      "gem36flash": "ok",
+      "gem37flash": "ok",
+      "glm5": "ok",
+      "glm51": "ok",
+      "glm52": "ok",
+      "glm53": "ok",
+      "gpt41": "ok",
+      "gpt54": "ok",
+      "gpt56sol": "ok",
+      "gpt56terra": "ok",
+      "grok45": "ok",
+      "grok46": "ok",
+      "haiku45": "ok",
+      "kimik25": "ok",
+      "kimik26": "ok",
+      "kimik27code": "ok",
+      "kimik3": "ok",
+      "minimaxm3": "ok",
+      "o4mini": "ok",
+      "opus5": "ok",
+      "qwen35plus": "ok",
+      "qwen37plus": "ok",
+      "qwen38max": "ok",
+      "qwen3max": "ok",
+      "sonnet46": "ok"
+    }
+  },
+  "release_excluded_judges": [
+    "dsv32"
+  ],
+  "segment": "presentation-order arm of chaosnli-snli-1000",
+  "top1_top2_gap": 0.0020000000000000018,
+  "top1_top4_spread": 0.006000000000000005
+}

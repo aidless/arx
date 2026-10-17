@@ -1,6 +1,6 @@
 # Case study: ChaosNLI, and what a rank gap is worth
 
-Two audits, on real data, both reproducible from this directory.
+Three audits, on real data, all reproducible from this directory.
 
 **Finding 1 — three boards, three verdicts, two refusals.** On the three
 ChaosNLI components the same gate returns `READABLE` once and `UNREADABLE`
@@ -13,6 +13,18 @@ board.** The same nine checkpoints, the same 1,000 items, the same margin. Swap
 the floor's producer from 100 humans to 32 named LLM judges and the verdict
 inverts: `READABLE` becomes `UNREADABLE`, because an LLM panel agrees with
 itself (0.8660) far more than any model in the board achieves (best 0.7890).
+
+**Finding 3 — the judges move further from re-ordering the answer options than
+the board's top ranks move from swapping one model for another.** The same
+judge, on the same 500 items, scored against the human majority, swings by a
+median of **0.0120** when nothing changes but the order the options are
+presented in. The board's top-to-second gap on those same items is **0.0020**.
+The ordering artefact is **6x the gap** it would be used to compute, and it
+exceeds that gap for **all 32 judges**, not just the worst few. Order is still
+the *smaller* of the two artefacts — a judge reproduces itself across option
+orders (median 0.9317) better than the panel reproduces itself across judges
+(0.8616) — which is why finding 2, not finding 3, is the one that moves the
+floor.
 
 This is `arx`'s central claim — *a leaderboard's rank difference is readable
 only if it exceeds the noise floor of the labels it was measured against* — run
@@ -79,6 +91,70 @@ One more piece of evidence for the same point, from audit 1: the leader on the
 `roberta-large`. The top of this board does not survive a change of sample
 size either.
 
+## Audit 3: the same judge, three option orders
+
+The board's top ranks are separated by a fraction of the resolution bound, and
+those gaps come from labels, and the labels came through a prompt. So: how far
+does one judge move on one item when nothing about the item changes and only
+the order in which the answer options are presented is permuted?
+
+The panel release ships that arm — 500 of the 1,000 items, re-asked under three
+permutations, all 32 judges — and its own analysis guide lists
+presentation-order analyses under **"Not covered"**, so this segment fills a gap
+the release names rather than re-deriving a published number.
+
+| on the 500 swap items | value |
+|---|---:|
+| board top1–top2 gap | 0.0020 |
+| board top1–top4 spread | 0.0060 |
+| **order-induced accuracy swing**, same judge, same items | median **0.0120**, p75 0.0200, max 0.0340 |
+| label flip rate vs variant 0 | median 7.1%, max 15.8% |
+| **swing / top1–top2 gap** | **6.00x** |
+
+A flip rate and a score change are not the same thing — flips cancel — so the
+headline is the *accuracy swing*, scored against the human majority under each
+permutation, not the flip rate. The conclusion holds either way, and it holds
+for every judge: **all 32 of them swing by more than the board's top gap.**
+
+The layering matters, and it goes against the obvious reading. Option order is a
+*smaller* perturbation than judge identity:
+
+| artefact | magnitude |
+|---|---:|
+| same judge across option orders (self-reproducibility, LOO over 3 permutations) | median **0.9317** |
+| different judges, same item (panel LOO floor) | **0.8616** |
+
+So a judge reproduces itself across formatting *better* than the panel
+reproduces itself across judges. Both artefacts dwarf the top gap, but only the
+second one moves the floor — which is why finding 2 is the load-bearing one.
+
+Two things this is not:
+
+* **Not a repeated-call noise floor.** The release states plainly that this
+  archive establishes no same-prompt repeated-call floor. An order flip is an
+  artefact of presentation, and the two are not interchangeable.
+* **Not a verdict.** The three permutations are one judge, not three independent
+  producers, so a floor over them would measure that judge's self-consistency
+  across formatting. It is reported as a diagnostic above, never as a gate
+  result.
+
+One more check, because the release excludes one judge (`dsv32`) from its own
+panel analysis so that a single panel is used across datasets. Both readings
+hold, so neither headline finding depends on that choice:
+
+| panel | LOO floor | floor = humans | floor = panel |
+|---|---:|---|---|
+| all 32 judges | 0.8616 | `MARGINAL` | `UNREADABLE` |
+| 31 judges (release protocol) | 0.8693 | `MARGINAL` | `UNREADABLE` |
+
+Note the human-floor verdict on *these* 500 items is `MARGINAL`, where the same
+board over all 1,000 items was `READABLE`. The effect did not move; the
+resolution did. That is what having four distinct verdicts is for.
+
+The release also publishes a SHA-256 per vote file; all 64 (32 baseline, 32
+swap) are verified against what is on disk by this script. That is stronger than
+the first-seen recording that predated it.
+
 ## How the human floor is built, and the one modelling step
 
 The public ChaosNLI release publishes each item's vote **counts** — a 2- or
@@ -109,7 +185,7 @@ the repository. ChaosNLI is CC-BY-NC-4.0 and is not redistributed here.
 | ChaosNLI-α annotations | same mirror, `raw/chaosNLI_alphanli.jsonl` | `f55817ec…` |
 | 9-model per-item predictions | vendored copy of the upstream release, `TheGuy-26/chaosnli-deberta-modernbert` | `7c788bb9…` |
 | αNLI per-item predictions | same vendored copy | `58ced70a…` |
-| 32-judge panel votes | `Chao1208/32judges-votes`, `datasets/chaosnli-snli-1000/` | no published hash; first-seen hashes recorded per file in `results_judge_panel.json` |
+| 32-judge panel votes (baseline + swap arms) | `Chao1208/32judges-votes`, `datasets/chaosnli-snli-1000/` | SHA-256 published per file in the release's `manifest.json`; all 64 files re-verified on disk by `audit_position_bias.py` |
 | panel item list (1,000 uids) | same release, `items/uids.txt` | `f0e5bea8…` (matches the release's own manifest) |
 
 Three caveats, stated plainly rather than buried:
@@ -132,14 +208,17 @@ Three caveats, stated plainly rather than buried:
 ## Reproduce
 
 ```bash
-python3 audit_chaosnli.py                     # all three components
-python3 audit_judge_panel.py                  # the two-floor comparison
+python3 audit_chaosnli.py                     # audit 1: all three components
+python3 audit_judge_panel.py                  # audit 2: the two-floor comparison
+python3 audit_position_bias.py                # audit 3: the option-order arm
 python3 audit_chaosnli.py --offline           # reuse whatever is in _data/
 ```
 
-Committed output: [`results.json`](results.json) (audit 1) and
-[`results_judge_panel.json`](results_judge_panel.json) (audit 2). `_data/` is
-git-ignored.
+Committed output: [`results.json`](results.json) (audit 1),
+[`results_judge_panel.json`](results_judge_panel.json) (audit 2), and
+[`results_position_bias.json`](results_position_bias.json) (audit 3). `_data/` is
+git-ignored. The write-up aimed at readers outside this repository is in
+[`ARTICLE.md`](ARTICLE.md) / [`ARTICLE.zh-CN.md`](ARTICLE.zh-CN.md).
 
 ## What these do not establish
 
@@ -200,8 +279,16 @@ gate exists to perform.
 
 另一个同向证据：在 1,000 子样本上榜首是 `albert-xxlarge`，而在全部 1,514 例上是 `roberta-large`——这张榜单的顶端**连样本量变化都扛不住**。
 
+**结论三：判官因「调换选项顺序」而移动的幅度，大于榜首与第二名之间被用来排名的差距。** 同一判官、同一批 500 个 item、对人类多数票计分，**只改选项呈现顺序**，准确率中位波动 **0.0120**；而这批 item 上 board 的 top1–top2 差距是 **0.0020**——序效应是它将要参与计算的差距的 **6 倍**，且**全部 32 个判官**（不只是最差的几个）都超过该差距。
+
+分层很重要，而且与直觉相反：**选项序是比「换判官」更温和的扰动**——同一判官跨三种选项序的自我复现率中位 **0.9317**，高于面板跨判官的一致率 0.8616。两者都远大于 top1–top2 差距，但只有后者会移动地板，这就是为什么结论二才是承重的那条。
+
+这一段**不是重复发布方的结论**：其分析指引明确把 presentation-order 分析列在 **"Not covered"** 之下，本段是补它标出的空白。也正因如此必须写清两点：① 它**不是**重复调用噪声地板——发布方明确声明该档案**不建立**同 prompt 重复调用的地板，序翻转是**呈现格式的伪影**，两者不可互换；② 它**不是 verdict**——三种排列是同一个判官，不是三个独立生产者，因此据此算出的地板只反映该判官跨格式的自我一致性，本报告只作诊断呈现。
+
+顺带做了发布方协议的敏感性检验（它出于「跨数据集共用同一面板」的规则把 `dsv32` 排除在自己的面板分析之外）：32 判官下 loo = 0.8616、31 判官下 = 0.8693，**两种口径下「人类地板 → 可读/边缘、面板地板 → 不可读」的翻转都成立**，两条主结论都不依赖这个选择。同时注意：**这 500 个 item 上人类地板的判决是 `MARGINAL`，而同一 board 在全部 1,000 个 item 上是 `READABLE`**——效应没动，分辨率动了，这正是四种判决分立的用途。
+
 **地板的构造（唯一一处建模步骤，已明示）**：ChaosNLI 公开发布的是每例**投票计数**（2 或 3 维、和为 100），不含标注者身份。脚本按每个 item 的计数做**种子化随机展开**成 100 个可交换的伪标注者；这是**派生量而非实测量**，三个种子下地板变动不超过 **2.2e-16**。判官地板**不需要**这一步——面板发布的是每个判官每 item 一条具名投票。
 
-**来源与哈希**：ChaosNLI 三个组件标注分别为 `99f9015d…` / `8eb49b58…` / `f55817ec…`（HF 镜像 `earino/chaosnli`）；9 模型与 αNLI 逐项预测分别为 `7c788bb9…` / `58ced70a…`（`TheGuy-26` 里 vendored 的上游副本）；判官投票来自 `Chao1208/32judges-votes`（无公开哈希，每文件的**首见哈希**记在 `results_judge_panel.json`）；面板 item 列表哈希 `f0e5bea8…` 与其 manifest 记载一致。原始数据一律不入库（ChaosNLI 为 CC-BY-NC-4.0），脚本运行时下载并校验。
+**来源与哈希**：ChaosNLI 三个组件标注分别为 `99f9015d…` / `8eb49b58…` / `f55817ec…`（HF 镜像 `earino/chaosnli`）；9 模型与 αNLI 逐项预测分别为 `7c788bb9…` / `58ced70a…`（`TheGuy-26` 里 vendored 的上游副本）；判官投票来自 `Chao1208/32judges-votes`（其 `manifest.json` **逐文件公布 SHA-256**；32 baseline + 32 swap 共 64 个文件已全部在磁盘上复核通过）；面板 item 列表哈希 `f0e5bea8…` 与其 manifest 记载一致。原始数据一律不入库（ChaosNLI 为 CC-BY-NC-4.0），脚本运行时下载并校验。
 
 **三点保留**：① 模型预测来自**第三方镜像**，上游 Dropbox 链接在本次执行时返回 HTML 拦截页；标注哈希与镜像自带审计文件记载一致，且脚本是重新校验而非采信。② **判官面板的后端未经独立认证**——这是发布方自己的 caveat（引自 `panel-chaosnli.json`）：模型字符串是「请求的」而非「应答的」。这限定了结论二的含义：这里测的是面板的**一致水平**，其**身份**是采信的。③ 这 9 个模型是 **2019 年代的编码器，不是 LLM**；审计对象是**装置**，这正是结论二能「固定 board、只换地板」的原因。

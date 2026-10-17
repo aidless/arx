@@ -140,6 +140,18 @@ named LLM judges as the floor, the same nine models on the same 1,000 items are
 `UNREADABLE` (margin −0.0770). A noise floor is a property of who produced the
 labels, not of the board.
 
+A third script asks how far the judges move on nothing but formatting: the same
+judge on the same 500 items swings by a median **0.0120** when only the order of
+the answer options changes — **6x** that item set's top-to-second gap, and more
+than the gap for **all 32 judges**. Order is the smaller of the two artefacts (a
+judge reproduces itself across option orders at 0.9317, better than the panel's
+0.8616 across judges), which is why the floor's producer is the finding that
+bites.
+
+The write-up aimed at readers outside this repo is in
+[ARTICLE.md](case-studies/chaosnli-noise-floor/ARTICLE.md) /
+[ARTICLE.zh-CN.md](case-studies/chaosnli-noise-floor/ARTICLE.zh-CN.md).
+
 That directory also records why a current LLM leaderboard was checked first and
 rejected: AlpacaEval 2.0 publishes no per-item human labels, and its five public
 evaluators are prompt variants of a single judge — two of them identical on

@@ -105,6 +105,15 @@ def fetch_unhashed(urls: list[str], path: Path, *, offline: bool) -> Path:
     raise SystemExit(f"could not fetch {path.name} from any source")
 
 
+def panel_file(data_dir: Path, arm: str, judge: str) -> Path:
+    """Where a panel vote file for one arm and one judge lives once cached."""
+    return data_dir / "panel" / f"{arm}__{judge}.jsonl"
+
+
+def manifest_file(data_dir: Path, *, offline: bool) -> Path:
+    return fetch_unhashed(MANIFEST_URLS, data_dir / "panel" / "manifest.json", offline=offline)
+
+
 def load_panel_votes(data_dir: Path, uids: list[str], offline: bool) -> tuple[np.ndarray, dict]:
     index = {uid: i for i, uid in enumerate(uids)}
     votes = np.full((len(JUDGES), len(uids)), -1, dtype=int)
