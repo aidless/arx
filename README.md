@@ -124,6 +124,21 @@ makes the classical tools necessary rather than optional:
   all. A high number with weak theories is still weak science, and the report
   says so.
 
+## Case study: the gate on a real leaderboard
+
+[`case-studies/chaosnli-noise-floor/`](case-studies/chaosnli-noise-floor/) runs
+the gate on ChaosNLI-S — 1,514 items, 100 human annotations each, nine
+checkpoints with published per-item predictions. The leader clears the floor
+(`READABLE`: margin 0.0383 against an MDE of 0.0203). The top four systems sit
+within 0.0059 of each other, **0.3x that bound** — the verdict is about the
+leader, and the ranking below it is not resolvable. The report says exactly
+that, in English and Chinese.
+
+That directory also records why a current LLM leaderboard was checked first and
+rejected: AlpacaEval 2.0 publishes no per-item human labels, and its five public
+evaluators are prompt variants of a single judge — two of them identical on
+805/805 items.
+
 ## Documentation
 
 | document | what it covers |

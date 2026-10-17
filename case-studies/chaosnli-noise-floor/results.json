@@ -1,0 +1,86 @@
+{
+  "board": [
+    {
+      "accuracy": 0.78665785997358,
+      "system": "roberta-large"
+    },
+    {
+      "accuracy": 0.7826948480845443,
+      "system": "bart-large"
+    },
+    {
+      "accuracy": 0.7813738441215323,
+      "system": "albert-xxlarge"
+    },
+    {
+      "accuracy": 0.7807133421400264,
+      "system": "xlnet-large"
+    },
+    {
+      "accuracy": 0.7536327608982827,
+      "system": "roberta-base"
+    },
+    {
+      "accuracy": 0.7384412153236459,
+      "system": "bert-large"
+    },
+    {
+      "accuracy": 0.7364597093791282,
+      "system": "xlnet-base"
+    },
+    {
+      "accuracy": 0.7291941875825627,
+      "system": "bert-base"
+    },
+    {
+      "accuracy": 0.702113606340819,
+      "system": "distilbert"
+    }
+  ],
+  "chance_level": 0.3333333333333333,
+  "config": "snli",
+  "delta_declared": 0.02,
+  "floor_across_seeds": [
+    0.7483817701453103,
+    0.7483817701453103,
+    0.7483817701453104
+  ],
+  "floor_estimate": 0.7483817701453103,
+  "floor_generators": "100 pseudo-annotators expanded from per-item vote counts",
+  "floor_method": "loo",
+  "floor_seed_spread": 1.1102230246251565e-16,
+  "floor_vs_chance": {
+    "above_chance": true,
+    "critical_z": 1.9599639845400536,
+    "n_items": 1514,
+    "n_items_needed": 5,
+    "note": "5 items would put this floor above chance at alpha=0.05",
+    "se": 0.0121152060697469,
+    "z": 34.25847108357503
+  },
+  "leader_score": 0.78665785997358,
+  "leader_system": "roberta-large",
+  "margin": 0.03827608982826969,
+  "mde": 0.020342380967899674,
+  "mde_method": "cluster_bootstrap",
+  "n_contestants": 9,
+  "n_generators": 100,
+  "n_items": 1514,
+  "reasons": [],
+  "sources": {
+    "annotations": {
+      "license": "CC-BY-NC-4.0 (ChaosNLI v1.0, Nie et al. 2020, arXiv:2010.03532)",
+      "sha256": "99f9015ddda7d85f66a087452bc30d53974314fe27e7d589e2f41ad44bd509c1",
+      "url": "https://huggingface.co/datasets/earino/chaosnli/resolve/main/raw/chaosNLI_snli.jsonl"
+    },
+    "model_predictions": {
+      "note": "third-party vendored copy; the upstream Dropbox link was unreachable",
+      "sha256": "7c788bb9df6917f56a99a3bbf19c307bf2d02ad14d8f02537338b7bfb629bb53",
+      "url": "https://raw.githubusercontent.com/TheGuy-26/chaosnli-deberta-modernbert/main/ChaosNLI/data/model_predictions/model_predictions_for_snli_mnli.json"
+    }
+  },
+  "threshold": 0.020342380967899674,
+  "top1_top2_gap": 0.003963011889035695,
+  "top1_top4_spread": 0.005944517833553542,
+  "verdict": "READABLE"
+}
