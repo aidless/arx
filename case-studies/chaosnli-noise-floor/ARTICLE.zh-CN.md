@@ -63,7 +63,7 @@ ChaosNLI 是一组被**每例 100 人**重新标注过的 NLI 基准，所以标
 
 三个几乎零成本的检查，能拦住这里大部分问题：
 
-1. **说清地板由谁产生，并检查它与参赛者不相交。** 与被排名模型同族的判官面板不是独立产生者；判官本身也在被排名之列的榜单，等于没有地板。（我拿一个当下知名的 LLM 榜单查过这一点，它不通过：它的五个公开判官是同一个 GPT-4 的提示变体，其中两个在 **805/805** 个 item 上判定完全相同，而被判集合里含它自己这一族。它分母没问题——它只是**没有独立产生者可以据以构造地板**。）
+1. **说清地板由谁产生，并检查它与参赛者不相交。** 与被排名模型同族的判官面板不是独立产生者；判官本身也在被排名之列的榜单，等于没有地板。（我拿 AlpacaEval 2.0 查过这一点，它不通过：它公开的五个评测器里**有三个是同一个 GPT-4-turbo 的提示变体**，另两个是 Claude 3 Opus 与 Mistral-Large 的单次运行；那三个变体中有两个在 **805/805** 个 item 上判定完全相同——那是同一次判官运行被数了两遍；而被判集合里含 `gpt4`、`gpt4_1106_preview` 与 `gpt-3.5-turbo-0301`，判官本身就是这一族。它分母没问题，805 是对齐的——它只是**没有独立产生者可以据以构造地板**。这四条前提逐条可重算：`audit_alpaca_eval.py` → `results_alpaca_eval.json`。）
 2. **在榜单自己的 item 集上算分辨率下界**，并用逐项分数。同一张榜单上两种估计量可以差约 2.7 倍，而其中更友善的那个是错的那个。
 3. **在讨论哪个模型更好之前，先确认排名顶部差距是否超过这个下界。** 本文唯一通过的那张榜单，前四名就在下界的 0.29 倍以内。
 
@@ -75,14 +75,16 @@ ChaosNLI 是一组被**每例 100 人**重新标注过的 NLI 基准，所以标
 - 模型预测来自上游发布的**第三方 vendored 副本**（上游 Dropbox 链接在本次执行时返回 HTML 拦截页）；人类标注来自镜像，其逐文件 SHA-256 是被**重新校验**而非采信。
 - **判官面板的身份是采信的**——这是发布方自己的 caveat：模型字符串是「请求的」，而非「已认证为实际应答者」。这里测的是面板的**一致水平**，它不依赖那些模型名字是否对。
 
-以上全部可由三个脚本、每次审计一份 JSON 复现，哈希已固定：
+以上全部可由四个脚本、每段审计一份 JSON 复现。脚本对每个输入先校验 SHA-256 再出数，哈希不符就拒绝报告：
 
 ```
 case-studies/chaosnli-noise-floor/
   audit_chaosnli.py        # 第一段
   audit_judge_panel.py     # 第二段
   audit_position_bias.py   # 第三段
-  results.json  results_judge_panel.json  results_position_bias.json
+  audit_alpaca_eval.py     # 第四段（AlpacaEval 2.0：假设不成立）
+  results.json  results_judge_panel.json
+  results_position_bias.json  results_alpaca_eval.json
 ```
 
 仓库：[aidless/arx](https://github.com/aidless/arx)。

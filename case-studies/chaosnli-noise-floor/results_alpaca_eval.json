@@ -1,0 +1,157 @@
+{
+  "board": "AlpacaEval 2.0",
+  "gate_verdict": "PREMISES_FAIL",
+  "inputs_verified": {
+    "ann_gpt41106__alpaca_eval_cot_gpt4_turbo_fn.json": "73262f232ca45b3d6cc67905d71dd14873bd59c444acf4da65f63314fc2a4cb4",
+    "ann_gpt41106__alpaca_eval_gpt4.json": "384930aa5e497028df2d23ea7b57db6ffdc2635c7af1a8dbd1ea8305e910773e",
+    "ann_gpt41106__weighted_alpaca_eval_gpt4_turbo.json": "2a05177cffbab8fa409adf7ee1f0f90414cab169afe391b861489a5734c79363",
+    "board_claude3opus.csv": "1a50d5ab466efad5e8b76a8625b92943ce5271d4776b224401c0ce360b1dcec8",
+    "board_cot_gpt4turbo.csv": "ebb9492f5650edb0ee8f0bb6ab0491e1373dbdf9bd27887c9ba9c4fa177754d5",
+    "board_gpt4turbo_fn.csv": "a2c393aae1652e883a75eb3ca2a9838c726ce9c3b55385f0748015f0fbf7675d",
+    "board_mistrallarge.csv": "80da67bb9f6764eded69c43150311315a20d707f71b88a655de743a6328bf0a4",
+    "board_wgpt4.csv": "fe32bf85c2f7429038faa4c9a884d1d131726454ff84a4b810a91c1c7a2aa0e9",
+    "evaluators_lb.csv": "db679d719e2a8705333ea2adbc184e77958226de58fe3146a815763e18ec5a3d"
+  },
+  "p1_human_labels": {
+    "columns_exposing_human_signal": [
+      "Human agreement"
+    ],
+    "per_item_human_columns": [],
+    "aggregate_human_agreement_for_published_evaluators": {
+      "alpaca_eval_cot_gpt4_turbo_fn": 68.63874533448178,
+      "alpaca_eval_gpt4_turbo_fn": 68.09413580246913,
+      "weighted_alpaca_eval_gpt4_turbo": 65.73198824263118
+    },
+    "note": "The human signal is one aggregate percentage per evaluator. No per-item human vote is published, so no floor can be built from an independent human producer on this board."
+  },
+  "p2_evaluator_composition": {
+    "published_evaluators": [
+      "alpaca_eval_cot_gpt4_turbo_fn",
+      "alpaca_eval_gpt4_turbo_fn",
+      "claude_3_opus_ranking",
+      "mistral-large-2402_ranking",
+      "weighted_alpaca_eval_gpt4_turbo"
+    ],
+    "gpt4_turbo_variants": [
+      "alpaca_eval_cot_gpt4_turbo_fn",
+      "alpaca_eval_gpt4_turbo_fn",
+      "weighted_alpaca_eval_gpt4_turbo"
+    ],
+    "other_single_runs": [
+      "claude_3_opus_ranking",
+      "mistral-large-2402_ranking"
+    ],
+    "n_published": 5,
+    "note": "Three of the five are prompt variants of one GPT-4-turbo, so a leave-one-out floor over them measures that judge's self-consistency, not an inter-annotator noise floor."
+  },
+  "p3_identical_variants": {
+    "annotation_files": {
+      "alpaca_eval_gpt4": "ann_gpt41106__alpaca_eval_gpt4.json",
+      "alpaca_eval_cot_gpt4_turbo_fn": "ann_gpt41106__alpaca_eval_cot_gpt4_turbo_fn.json",
+      "weighted_alpaca_eval_gpt4_turbo": "ann_gpt41106__weighted_alpaca_eval_gpt4_turbo.json"
+    },
+    "items_per_file": {
+      "alpaca_eval_gpt4": 805,
+      "alpaca_eval_cot_gpt4_turbo_fn": 805,
+      "weighted_alpaca_eval_gpt4_turbo": 805
+    },
+    "same_item_sequence": true,
+    "pairwise": {
+      "alpaca_eval_cot_gpt4_turbo_fn vs alpaca_eval_gpt4": {
+        "identical_verdicts": 0,
+        "compared": 805
+      },
+      "alpaca_eval_cot_gpt4_turbo_fn vs weighted_alpaca_eval_gpt4_turbo": {
+        "identical_verdicts": 805,
+        "compared": 805
+      },
+      "alpaca_eval_gpt4 vs weighted_alpaca_eval_gpt4_turbo": {
+        "identical_verdicts": 0,
+        "compared": 805
+      }
+    },
+    "pairs_identical_on_every_item": [
+      "alpaca_eval_cot_gpt4_turbo_fn vs weighted_alpaca_eval_gpt4_turbo"
+    ],
+    "note": "An identical verdict on every item means one judge run counted twice, not two independent producers."
+  },
+  "p4_actor_disjointness": {
+    "per_board": {
+      "alpaca_eval_gpt4_turbo_fn": {
+        "judge_gpt_family": true,
+        "n_contestants": 10,
+        "n_total": "805",
+        "gpt_family_contestants": [
+          "gpt4",
+          "gpt4_turbo"
+        ]
+      },
+      "alpaca_eval_cot_gpt4_turbo_fn": {
+        "judge_gpt_family": true,
+        "n_contestants": 12,
+        "n_total": "805.0",
+        "gpt_family_contestants": [
+          "gpt4",
+          "gpt4_turbo"
+        ]
+      },
+      "weighted_alpaca_eval_gpt4_turbo": {
+        "judge_gpt_family": true,
+        "n_contestants": 222,
+        "n_total": "805",
+        "gpt_family_contestants": [
+          "aligner-2b_gpt-4-turbo-2024-04-09",
+          "alpaca-farm-ppo-sim-gpt4-20k",
+          "gpt-3.5-turbo-0301",
+          "gpt-3.5-turbo-0613",
+          "gpt-3.5-turbo-1106",
+          "gpt-3.5-turbo-1106_concise",
+          "gpt-3.5-turbo-1106_verbose",
+          "gpt-3.5-turbo-16k-0613",
+          "gpt-4-turbo-2024-04-09",
+          "gpt-4o-2024-05-13",
+          "gpt-4o-mini-2024-07-18",
+          "gpt35_turbo_instruct",
+          "gpt4",
+          "gpt4_0314",
+          "gpt4_0613",
+          "gpt4_0613_concise",
+          "gpt4_0613_verbose",
+          "gpt4_1106_preview",
+          "gpt4_1106_preview_concise",
+          "gpt4_1106_preview_verbose",
+          "gpt4_gamed",
+          "openpipe-moa-gpt-4-turbo-v1"
+        ]
+      },
+      "claude_3_opus_ranking": {
+        "judge_gpt_family": false,
+        "n_contestants": 6,
+        "n_total": "0",
+        "gpt_family_contestants": [
+          "gpt-3.5-turbo-1106",
+          "gpt4_0314",
+          "gpt4_0613",
+          "gpt4_1106_preview"
+        ]
+      },
+      "mistral-large-2402_ranking": {
+        "judge_gpt_family": false,
+        "n_contestants": 6,
+        "n_total": "0",
+        "gpt_family_contestants": [
+          "gpt-3.5-turbo-1106",
+          "gpt4_0314",
+          "gpt4_0613",
+          "gpt4_1106_preview"
+        ]
+      }
+    },
+    "boards_with_actor_overlap": [
+      "alpaca_eval_cot_gpt4_turbo_fn",
+      "alpaca_eval_gpt4_turbo_fn",
+      "weighted_alpaca_eval_gpt4_turbo"
+    ],
+    "note": "On these boards a GPT-4-family judge ranks GPT-4-family contestants, so the judge is not an independent producer of the labels it is ranked by."
+  }
+}

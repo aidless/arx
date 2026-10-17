@@ -188,6 +188,21 @@ the repository. ChaosNLI is CC-BY-NC-4.0 and is not redistributed here.
 | 32-judge panel votes (baseline + swap arms) | `Chao1208/32judges-votes`, `datasets/chaosnli-snli-1000/` | SHA-256 published per file in the release's `manifest.json`; all 64 files re-verified on disk by `audit_position_bias.py` |
 | panel item list (1,000 uids) | same release, `items/uids.txt` | `f0e5bea8…` (matches the release's own manifest) |
 
+Audit 4's inputs come from AlpacaEval 2.0's own published files. Their SHA-256
+values are pinned in `audit_alpaca_eval.py` (`INPUTS`) and re-verified on every
+run:
+
+| what | where | SHA-256 |
+|---|---|---|
+| per-evaluator annotations, 805 items each | release's `ann_gpt41106__alpaca_eval_gpt4.json`, `…_alpaca_eval_cot_gpt4_turbo_fn.json`, `…_weighted_alpaca_eval_gpt4_turbo.json` | `384930aa…`, `73262f23…`, `2a05177c…` |
+| evaluator table (the aggregate human column) | release's `evaluators_lb.csv` | `db679d71…` |
+| the five published evaluators' leaderboards | release's AE2 leaderboard CSVs — GPT-4-turbo ×3, Claude 3 Opus, Mistral-Large | `a2c393aa…`, `ebb9492f…`, `fe32bf85…`, `1a50d5ab…`, `80da67bb…` |
+
+One caveat for audit 4, in the same spirit as the Dropbox note below: the
+filenames above are the ones this machine used, and the release identifies these
+files by evaluator name rather than by that filename. The hashes are the check
+that matters — a copy that fails them is not the data these numbers came from.
+
 Three caveats, stated plainly rather than buried:
 
 * **The model predictions are a mirror, not upstream.** The upstream
@@ -211,14 +226,22 @@ Three caveats, stated plainly rather than buried:
 python3 audit_chaosnli.py                     # audit 1: all three components
 python3 audit_judge_panel.py                  # audit 2: the two-floor comparison
 python3 audit_position_bias.py                # audit 3: the option-order arm
+python3 audit_alpaca_eval.py                  # audit 4: why AlpacaEval was rejected
 python3 audit_chaosnli.py --offline           # reuse whatever is in _data/
 ```
 
 Committed output: [`results.json`](results.json) (audit 1),
-[`results_judge_panel.json`](results_judge_panel.json) (audit 2), and
-[`results_position_bias.json`](results_position_bias.json) (audit 3). `_data/` is
+[`results_judge_panel.json`](results_judge_panel.json) (audit 2),
+[`results_position_bias.json`](results_position_bias.json) (audit 3) and
+[`results_alpaca_eval.json`](results_alpaca_eval.json) (audit 4). `_data/` is
 git-ignored. The write-up aimed at readers outside this repository is in
 [`ARTICLE.md`](ARTICLE.md) / [`ARTICLE.zh-CN.md`](ARTICLE.zh-CN.md).
+
+Audit 4 differs from the first three in one respect, and it is stated rather
+than buried: its three scripts are self-downloading, but audit 4 **does not
+download**. Point `--data-dir` at your own copy of the AlpacaEval 2.0 release
+files (default `_data/alpaca/`); the script then verifies all nine SHA-256
+values against the table in its own `INPUTS` before computing anything.
 
 ## What these do not establish
 
@@ -237,20 +260,32 @@ git-ignored. The write-up aimed at readers outside this repository is in
 The obvious target was a current LLM leaderboard. The AlpacaEval 2.0 data was
 downloaded and checked, and it fails the gate's premises:
 
-* its per-item **human** labels are not published — only an aggregate `Human
-  agreement` column (e.g. `alpaca_eval_gpt4_fn` = 70.99%);
-* its five public evaluators are four prompt variants of the same GPT-4 plus one
-  Claude run covering a single model, so a leave-one-out floor over them would
-  measure GPT-4's self-consistency, not an inter-annotator noise floor;
-* two of those variants agree on **805 of 805** items — one judge run, not two
-  producers;
-* the ranked contestant set includes `gpt4` and `gpt-3.5-turbo-0301` while the
-  judges are GPT-4-family, an actor-disjointness violation.
+* its per-item **human** labels are not published — only one aggregate `Human
+  agreement` column per evaluator (68.64% for `alpaca_eval_cot_gpt4_turbo_fn`,
+  65.73% for `weighted_alpaca_eval_gpt4_turbo`);
+* its five public evaluators are **three prompt variants of the same
+  GPT-4-turbo** (`alpaca_eval_gpt4_turbo_fn`, `alpaca_eval_cot_gpt4_turbo_fn`,
+  `weighted_alpaca_eval_gpt4_turbo`) plus a single Claude 3 Opus run
+  (`claude_3_opus_ranking`) and a single Mistral-Large run
+  (`mistral-large-2402_ranking`), so a leave-one-out floor over them would
+  measure one judge's self-consistency, not an inter-annotator noise floor;
+* two of those GPT-4-turbo variants return an identical verdict on **805 of 805**
+  items — one judge run, not two producers;
+* the ranked contestant set includes `gpt4`, `gpt4_1106_preview` and
+  `gpt-3.5-turbo-0301` while the judges are GPT-4-family, an actor-disjointness
+  violation.
 
-The denominators were fine (the three evaluators cover exactly the same 805
-items), so the failure is not a mismatched item set — it is that the labels have
-no independent producers to build a floor from. That is itself the check this
-gate exists to perform.
+The denominators were fine (the three annotation files cover exactly the same
+805 items, and each board's `n_total` is 805), so the failure is not a mismatched
+item set — it is that the labels have no independent producers to build a floor
+from. That is itself the check this gate exists to perform.
+
+All four premises are **computed, not asserted**:
+[`audit_alpaca_eval.py`](audit_alpaca_eval.py) →
+[`results_alpaca_eval.json`](results_alpaca_eval.json). The script verifies the
+SHA-256 of every input before reporting a number, and refuses to run if a file
+is missing or differs — a third-party copy that fails those hashes is not the
+file these numbers came from.
 
 ---
 

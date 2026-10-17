@@ -118,11 +118,14 @@ Three checks that cost almost nothing and catch most of this:
 1. **Name the floor's producer, and check it is disjoint from the contestants.**
    A judge panel drawn from the same families as the ranked models is not an
    independent producer; a leaderboard whose judge is also a contestant has no
-   floor at all. (I checked a well-known current LLM leaderboard for this and it
-   failed: its five public evaluators are prompt variants of a single GPT-4,
-   two of them identical on 805 of 805 items, and its judged set includes the
-   judge's own family. Its denominators were fine. It just had no independent
-   producer to build a floor from.)
+   floor at all. (I checked AlpacaEval 2.0 for this and it failed: of the five
+   evaluators it publishes, **three are prompt variants of one GPT-4-turbo** and
+   the other two are single Claude 3 Opus and Mistral-Large runs; two of those
+   three variants return an identical verdict on 805 of 805 items — one judge
+   run counted twice; and its judged set includes `gpt4`, `gpt4_1106_preview`
+   and `gpt-3.5-turbo-0301`, the judge's own family. Its denominators were fine,
+   805 aligned. It just had no independent producer to build a floor from. All
+   four premises recompute: `audit_alpaca_eval.py` → `results_alpaca_eval.json`.)
 2. **Compute the resolution bound on the board's own item set**, with per-item
    scores. Two estimators on the same board can differ by ~2.7x, and the
    friendlier one is the wrong one.
@@ -146,15 +149,18 @@ Three checks that cost almost nothing and catch most of this:
   have served the request. What is measured here is the panel's *agreement
   level*, which does not depend on the model names being right.
 
-Everything above is reproducible from three scripts and one JSON per audit, with
-pinned hashes:
+Everything above is reproducible from four scripts and one JSON per audit. Each
+script verifies the SHA-256 of every input before reporting a number, and
+refuses to report a number from a file that fails:
 
 ```
 case-studies/chaosnli-noise-floor/
   audit_chaosnli.py        # audit 1
   audit_judge_panel.py     # audit 2
   audit_position_bias.py   # audit 3
-  results.json  results_judge_panel.json  results_position_bias.json
+  audit_alpaca_eval.py     # audit 4 (AlpacaEval 2.0: premises fail)
+  results.json  results_judge_panel.json
+  results_position_bias.json  results_alpaca_eval.json
 ```
 
 Repository: [aidless/arx](https://github.com/aidless/arx). The gate is

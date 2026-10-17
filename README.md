@@ -153,9 +153,11 @@ The write-up aimed at readers outside this repo is in
 [ARTICLE.zh-CN.md](case-studies/chaosnli-noise-floor/ARTICLE.zh-CN.md).
 
 That directory also records why a current LLM leaderboard was checked first and
-rejected: AlpacaEval 2.0 publishes no per-item human labels, and its five public
-evaluators are prompt variants of a single judge — two of them identical on
-805/805 items.
+rejected: AlpacaEval 2.0 publishes no per-item human labels, and three of its
+five public evaluators are prompt variants of one GPT-4-turbo — two of those
+identical on 805/805 items.
+[`audit_alpaca_eval.py`](case-studies/chaosnli-noise-floor/audit_alpaca_eval.py)
+recomputes all four premises and verifies each input's SHA-256 before reporting.
 
 ## Documentation
 
