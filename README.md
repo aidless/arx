@@ -9,7 +9,7 @@ could actually resolve the thing being claimed.
 [![CI](https://github.com/aidless/arx/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/arx/actions/workflows/ci.yml)
 
 ```
-pytest: 369 passed   |   ruff: clean   |   examples: 5, all runnable offline
+pytest: 366 passed, 3 skipped   |   ruff: clean   |   examples: 5, all runnable offline
 ```
 
 ## The one-sentence version
@@ -168,7 +168,8 @@ evaluators are prompt variants of a single judge — two of them identical on
 
 ## Status
 
-The statistical core and the loop are complete and tested (369 tests, ruff
+The statistical core and the loop are complete and tested (366 tests passing
+plus 3 environment-skipped, ruff
 clean, Python 3.12). The literature and Zotero integrations are implemented but
 have not been exercised against live services — `arx doctor` reports what your
 install can actually do. The RL/Goodhart demonstration (`arx.rl.goodhart_env`) is a bandit with
