@@ -9,7 +9,7 @@ could actually resolve the thing being claimed.
 [![CI](https://github.com/aidless/arx/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/arx/actions/workflows/ci.yml)
 
 ```
-pytest: 366 passed, 3 skipped   |   ruff: clean   |   examples: 5, all runnable offline
+pytest: 373 passed   |   ruff: clean   |   examples: 6, all runnable offline
 ```
 
 ## The one-sentence version
@@ -41,6 +41,21 @@ python3 -m arx.cli --help
 
 Python 3.12+ is the only supported version and the only one required — the core
 package imports nothing beyond `numpy` and the standard library.
+
+## Audit a leaderboard
+
+```bash
+arx audit board.json --delta 0.02
+arx audit board.json --delta 0.02 --html report.html
+```
+
+`board.json` needs `votes` (generators × items), `scores` (system → score), and
+optionally `judge_ids`, `contestant_ids`, `item_ids`, `floor_item_ids`. The
+`--html` report is a single self-contained file: the verdict, the floor, the
+margin, the resolution bound, and the reason each refusal fired. No network, no
+model, no JavaScript. A hostile leaderboard name is escaped, not rendered.
+
+`examples/06_audit_report.py` writes a demo report to `examples/_out/`.
 
 ## What the gate refuses
 
@@ -124,41 +139,6 @@ makes the classical tools necessary rather than optional:
   all. A high number with weak theories is still weak science, and the report
   says so.
 
-## Case study: the gate on real leaderboards
-
-[`case-studies/chaosnli-noise-floor/`](case-studies/chaosnli-noise-floor/) runs
-the gate on all three ChaosNLI components — 4,645 items between them, 100 human
-annotations each, nine checkpoints with published per-item predictions. The gate
-returns `READABLE` once and `UNREADABLE` twice, and on both refusals the
-**leader itself** sits at or below the floor. On the one readable board the top
-four systems are within **0.29x** of the minimum detectable effect, so the
-verdict is about the leader and says nothing about the ranking under it.
-
-A second script holds that board fixed and swaps **only the label producer**.
-With 100 humans as the floor the board is `READABLE` (margin +0.0423); with 32
-named LLM judges as the floor, the same nine models on the same 1,000 items are
-`UNREADABLE` (margin −0.0770). A noise floor is a property of who produced the
-labels, not of the board.
-
-A third script asks how far the judges move on nothing but formatting: the same
-judge on the same 500 items swings by a median **0.0120** when only the order of
-the answer options changes — **6x** that item set's top-to-second gap, and more
-than the gap for **all 32 judges**. Order is the smaller of the two artefacts (a
-judge reproduces itself across option orders at 0.9317, better than the panel's
-0.8616 across judges), which is why the floor's producer is the finding that
-bites.
-
-The write-up aimed at readers outside this repo is in
-[ARTICLE.md](case-studies/chaosnli-noise-floor/ARTICLE.md) /
-[ARTICLE.zh-CN.md](case-studies/chaosnli-noise-floor/ARTICLE.zh-CN.md).
-
-That directory also records why a current LLM leaderboard was checked first and
-rejected: AlpacaEval 2.0 publishes no per-item human labels, and three of its
-five public evaluators are prompt variants of one GPT-4-turbo — two of those
-identical on 805/805 items.
-[`audit_alpaca_eval.py`](case-studies/chaosnli-noise-floor/audit_alpaca_eval.py)
-recomputes all four premises and verifies each input's SHA-256 before reporting.
-
 ## Documentation
 
 | document | what it covers |
@@ -170,8 +150,7 @@ recomputes all four premises and verifies each input's SHA-256 before reporting.
 
 ## Status
 
-The statistical core and the loop are complete and tested (366 tests passing
-plus 3 environment-skipped, ruff
+The statistical core and the loop are complete and tested (373 tests, ruff
 clean, Python 3.12). The literature and Zotero integrations are implemented but
 have not been exercised against live services — `arx doctor` reports what your
 install can actually do. The RL/Goodhart demonstration (`arx.rl.goodhart_env`) is a bandit with

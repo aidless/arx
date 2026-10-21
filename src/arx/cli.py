@@ -126,6 +126,11 @@ def cmd_audit(args: argparse.Namespace) -> int:
         power=args.power,
         seed=args.seed,
     )
+    if args.html:
+        from .audit.report_html import render_html
+
+        Path(args.html).write_text(render_html(report), encoding="utf-8")
+        print(f"html report: {args.html}")
     if args.json:
         print(json.dumps(report.to_dict(), indent=2, default=str))
     else:
@@ -377,6 +382,7 @@ def build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--power", type=float, default=0.8)
     audit.add_argument("--seed", type=int, default=0)
     audit.add_argument("--json", action="store_true")
+    audit.add_argument("--html", default=None, help="write a single-file HTML report")
     audit.set_defaults(func=cmd_audit)
 
     verify = sub.add_parser("verify-ledger", help="verify a ledger hash chain")

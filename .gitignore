@@ -44,3 +44,17 @@ paper/main.aux
 paper/main.log
 paper/main.out
 paper/missfont.log
+
+
+# --- added by WorkBuddy takeover 2026-10-21 ---
+.env.*
+!.env.example
+!.env.template
+node_modules/
+*.pyc
+data/
+models/
+.regression_tmp/
+*.bak
+
+*.bak*
