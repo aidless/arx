@@ -1,0 +1,773 @@
+{
+  "meta": {
+    "repo": "arx",
+    "demo": "leaderboard-audit",
+    "commit": "608cda6",
+    "worktree_dirty": true,
+    "dirty_paths": [
+      "demo/"
+    ],
+    "generated_at": "2026-10-22T07:12:44+00:00",
+    "mode": "offline-numpy",
+    "seed": 0,
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "note": "六个合成案例在构建时由 arx.audit 重算；报告 HTML 由 arx.audit.report_html 生成。"
+  },
+  "summary": {
+    "cases": 6,
+    "verdicts": {
+      "READABLE": 1,
+      "MARGINAL": 1,
+      "UNREADABLE": 1,
+      "UNDECIDABLE": 3
+    }
+  },
+  "cases": [
+    {
+      "id": "readable",
+      "title": "五名生成者，领先者高出噪声地板",
+      "question": "这份榜面能分辨 strong 与 weak 的差距吗？",
+      "verdict": "READABLE",
+      "meaning": "差距大于测量误差。它不表示这个指标本身是对的。",
+      "reasons": [],
+      "reason_codes": [],
+      "metrics": [
+        {
+          "label": "噪声地板",
+          "value": "0.9210",
+          "source": "AuditReport.floor_estimate"
+        },
+        {
+          "label": "领先者",
+          "value": "strong = 0.9600",
+          "source": "AuditReport.leader_system / leader_score"
+        },
+        {
+          "label": "高出地板",
+          "value": "+0.0390",
+          "source": "AuditReport.margin"
+        },
+        {
+          "label": "分辨率下界",
+          "value": "0.0274",
+          "source": "AuditReport.threshold"
+        },
+        {
+          "label": "MDE",
+          "value": "0.0274",
+          "source": "AuditReport.mde"
+        },
+        {
+          "label": "items",
+          "value": 400,
+          "source": "AuditReport.n_items"
+        },
+        {
+          "label": "generators",
+          "value": 5,
+          "source": "AuditReport.n_generators"
+        }
+      ],
+      "chance": {
+        "above_chance": true,
+        "z": 16.839999999999996,
+        "critical_z": 1.9599639845400536,
+        "n_items_needed": 6,
+        "source": "AuditReport.extra.floor_vs_chance"
+      },
+      "notes": [],
+      "board": {
+        "n_generators": 5,
+        "n_items": 400,
+        "agreement": 0.93,
+        "seed": 0,
+        "scores": {
+          "strong": 0.96,
+          "weak": 0.6
+        },
+        "delta_declared": 0.02,
+        "judge_ids": [
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "g5"
+        ],
+        "contestant_ids": [
+          "strong",
+          "weak"
+        ],
+        "votes_sha256_16": "27602db8d518e5a1"
+      },
+      "report": {
+        "verdict": "READABLE",
+        "reasons": [],
+        "leader_system": "strong",
+        "leader_score": 0.96,
+        "floor_estimate": 0.9209999999999999,
+        "margin": 0.039000000000000035,
+        "delta_declared": 0.02,
+        "mde": 0.027449817021202763,
+        "threshold": 0.027449817021202763,
+        "n_items": 400,
+        "n_floor_items": 400,
+        "n_generators": 5,
+        "n_contestants": 2,
+        "floor_method": "loo",
+        "sequential": null,
+        "extra": {
+          "alpha": 0.05,
+          "power": 0.8,
+          "per_generator_floor": [
+            0.92,
+            0.9325,
+            0.92,
+            0.9025,
+            0.93
+          ],
+          "chance_level": 0.5,
+          "floor_vs_chance": {
+            "z": 16.839999999999996,
+            "critical_z": 1.9599639845400536,
+            "se": 0.025,
+            "n_items": 400,
+            "n_items_needed": 6,
+            "note": "6 items would put this floor above chance at alpha=0.05",
+            "above_chance": true
+          },
+          "mde_method": "binomial_approx"
+        }
+      },
+      "report_html": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>五名生成者，领先者高出噪声地板 — READABLE</title>\n<style>\n  :root {\n    color-scheme: light;\n    --ink: #171717;\n    --muted: #5f6368;\n    --line: #d9dde3;\n    --paper: #ffffff;\n    --wash: #f6f7f9;\n  }\n  * { box-sizing: border-box; }\n  body {\n    margin: 0;\n    background: var(--wash);\n    color: var(--ink);\n    font: 15px/1.55 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Noto Sans CJK SC\",\n          \"Noto Sans\", Arial, sans-serif;\n  }\n  main { max-width: 980px; margin: 0 auto; padding: 36px 22px 56px; }\n  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }\n  h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 18px; }\n  h2 { font-size: 18px; margin: 30px 0 10px; }\n  .verdict {\n    display: inline-block; color: #fff; background: #0a7d32;\n    padding: 7px 12px; border-radius: 999px; font-weight: 700;\n    letter-spacing: .04em;\n  }\n  .meaning { margin: 12px 0 0; max-width: 70ch; color: var(--muted); }\n  .grid {\n    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n    gap: 12px; margin: 26px 0 0;\n  }\n  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }\n  .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }\n  .value { font-size: 22px; font-weight: 650; margin-top: 4px; font-variant-numeric: tabular-nums; }\n  .note { font-size: 12px; color: var(--muted); margin-top: 4px; }\n  section { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 18px; margin-top: 16px; }\n  ul { margin: 8px 0 0; padding-left: 22px; }\n  li { margin: 6px 0; }\n  table.kv { border-collapse: collapse; width: 100%; margin-top: 8px; }\n  table.kv th, table.kv td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; }\n  table.kv th { width: 34%; color: var(--muted); font-weight: 600; }\n  details { margin-top: 16px; }\n  summary { cursor: pointer; color: var(--muted); }\n  pre { overflow: auto; background: var(--wash); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 12px; }\n  .repro { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-top: 16px; }\n  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }\n  footer { margin-top: 28px; color: var(--muted); font-size: 12px; }\n</style>\n</head>\n<body>\n<main>\n  <div class=\"eyebrow\">arx / benchmark readability audit</div>\n  <h1>五名生成者，领先者高出噪声地板</h1>\n  <div class=\"verdict\">READABLE</div>\n  <p class=\"meaning\">The gap is larger than the measurement error. It does not mean the metric is the right one.</p>\n\n  <div class=\"grid\">\n    <div class=\"card\"><div class=\"label\">Leader</div><div class=\"value\">strong</div><div class=\"note\">score=0.9600</div></div>\n    <div class=\"card\"><div class=\"label\">Noise floor</div><div class=\"value\">0.9210</div><div class=\"note\">loo</div></div>\n    <div class=\"card\"><div class=\"label\">Margin over floor</div><div class=\"value\">0.0390</div></div>\n    <div class=\"card\"><div class=\"label\">Resolution bound</div><div class=\"value\">0.0274</div><div class=\"note\">declared delta=0.0200; MDE=0.0274</div></div>\n    <div class=\"card\"><div class=\"label\">Items</div><div class=\"value\">400</div><div class=\"note\">floor on 400</div></div>\n    <div class=\"card\"><div class=\"label\">Gold generators</div><div class=\"value\">5</div></div>\n    <div class=\"card\"><div class=\"label\">Contestants</div><div class=\"value\">2</div></div>\n  </div>\n\n  <section>\n    <h2>Why this verdict</h2>\n    <ul><li>No refusal reason was recorded.</li></ul>\n  </section>\n\n  \n  <details><summary>Extra diagnostics</summary><pre>{\n  &quot;alpha&quot;: 0.05,\n  &quot;power&quot;: 0.8,\n  &quot;per_generator_floor&quot;: [\n    0.92,\n    0.9325,\n    0.92,\n    0.9025,\n    0.93\n  ],\n  &quot;chance_level&quot;: 0.5,\n  &quot;floor_vs_chance&quot;: {\n    &quot;z&quot;: 16.839999999999996,\n    &quot;critical_z&quot;: 1.9599639845400536,\n    &quot;se&quot;: 0.025,\n    &quot;n_items&quot;: 400,\n    &quot;n_items_needed&quot;: 6,\n    &quot;note&quot;: &quot;6 items would put this floor above chance at alpha=0.05&quot;,\n    &quot;above_chance&quot;: true\n  },\n  &quot;mde_method&quot;: &quot;binomial_approx&quot;\n}</pre></details>\n\n  <div class=\"repro\">\n    <strong>Reproduce.</strong>\n    <code>arx audit &lt;leaderboard.json&gt; --html &lt;report.html&gt;</code>\n    <div class=\"note\">The verdict is computed from the input JSON only. No network, no model.</div>\n  </div>\n\n  <details>\n    <summary>Raw report</summary>\n    <pre>{\n  &quot;verdict&quot;: &quot;READABLE&quot;,\n  &quot;reasons&quot;: [],\n  &quot;leader_system&quot;: &quot;strong&quot;,\n  &quot;leader_score&quot;: 0.96,\n  &quot;floor_estimate&quot;: 0.9209999999999999,\n  &quot;margin&quot;: 0.039000000000000035,\n  &quot;delta_declared&quot;: 0.02,\n  &quot;mde&quot;: 0.027449817021202763,\n  &quot;threshold&quot;: 0.027449817021202763,\n  &quot;n_items&quot;: 400,\n  &quot;n_floor_items&quot;: 400,\n  &quot;n_generators&quot;: 5,\n  &quot;n_contestants&quot;: 2,\n  &quot;floor_method&quot;: &quot;loo&quot;,\n  &quot;sequential&quot;: null,\n  &quot;extra&quot;: {\n    &quot;alpha&quot;: 0.05,\n    &quot;power&quot;: 0.8,\n    &quot;per_generator_floor&quot;: [\n      0.92,\n      0.9325,\n      0.92,\n      0.9025,\n      0.93\n    ],\n    &quot;chance_level&quot;: 0.5,\n    &quot;floor_vs_chance&quot;: {\n      &quot;z&quot;: 16.839999999999996,\n      &quot;critical_z&quot;: 1.9599639845400536,\n      &quot;se&quot;: 0.025,\n      &quot;n_items&quot;: 400,\n      &quot;n_items_needed&quot;: 6,\n      &quot;note&quot;: &quot;6 items would put this floor above chance at alpha=0.05&quot;,\n      &quot;above_chance&quot;: true\n    },\n    &quot;mde_method&quot;: &quot;binomial_approx&quot;\n  }\n}</pre>\n  </details>\n\n  <footer>\n    Generated 2026-10-22T07:12:44+00:00 by arx. A refusal is the tool working.\n  </footer>\n</main>\n</body>\n</html>\n",
+      "source": {
+        "kind": "recomputed",
+        "audit": "arx.audit.audit_leaderboard",
+        "renderer": "arx.audit.report_html.render_html"
+      }
+    },
+    {
+      "id": "marginal",
+      "title": "同样的榜面，只有 120 个 item",
+      "question": "差距没变，但样本分辨率变了吗？",
+      "verdict": "MARGINAL",
+      "meaning": "差距为正，但落在当前样本能分辨的范围内；需要更多 item。",
+      "reasons": [
+        "margin +0.0267 is inside the resolution bound 0.0501"
+      ],
+      "reason_codes": [
+        "margin +0.0267 is inside the resolution bound 0.0501"
+      ],
+      "metrics": [
+        {
+          "label": "噪声地板",
+          "value": "0.9333",
+          "source": "AuditReport.floor_estimate"
+        },
+        {
+          "label": "领先者",
+          "value": "strong = 0.9600",
+          "source": "AuditReport.leader_system / leader_score"
+        },
+        {
+          "label": "高出地板",
+          "value": "+0.0267",
+          "source": "AuditReport.margin"
+        },
+        {
+          "label": "分辨率下界",
+          "value": "0.0501",
+          "source": "AuditReport.threshold"
+        },
+        {
+          "label": "MDE",
+          "value": "0.0501",
+          "source": "AuditReport.mde"
+        },
+        {
+          "label": "items",
+          "value": 120,
+          "source": "AuditReport.n_items"
+        },
+        {
+          "label": "generators",
+          "value": 5,
+          "source": "AuditReport.n_generators"
+        }
+      ],
+      "chance": {
+        "above_chance": true,
+        "z": 9.49385766342288,
+        "critical_z": 1.9599639845400536,
+        "n_items_needed": 6,
+        "source": "AuditReport.extra.floor_vs_chance"
+      },
+      "notes": [],
+      "board": {
+        "n_generators": 5,
+        "n_items": 120,
+        "agreement": 0.93,
+        "seed": 3,
+        "scores": {
+          "strong": 0.96,
+          "weak": 0.6
+        },
+        "delta_declared": 0.02,
+        "judge_ids": [
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "g5"
+        ],
+        "contestant_ids": [
+          "strong",
+          "weak"
+        ],
+        "votes_sha256_16": "0a62465bf19fb420"
+      },
+      "report": {
+        "verdict": "MARGINAL",
+        "reasons": [
+          "margin +0.0267 is inside the resolution bound 0.0501"
+        ],
+        "leader_system": "strong",
+        "leader_score": 0.96,
+        "floor_estimate": 0.9333333333333333,
+        "margin": 0.026666666666666616,
+        "delta_declared": 0.02,
+        "mde": 0.050116279939673394,
+        "threshold": 0.050116279939673394,
+        "n_items": 120,
+        "n_floor_items": 120,
+        "n_generators": 5,
+        "n_contestants": 2,
+        "floor_method": "loo",
+        "sequential": null,
+        "extra": {
+          "alpha": 0.05,
+          "power": 0.8,
+          "per_generator_floor": [
+            0.9333,
+            0.95,
+            0.9167,
+            0.9333,
+            0.9333
+          ],
+          "chance_level": 0.5,
+          "floor_vs_chance": {
+            "z": 9.49385766342288,
+            "critical_z": 1.9599639845400536,
+            "se": 0.04564354645876384,
+            "n_items": 120,
+            "n_items_needed": 6,
+            "note": "6 items would put this floor above chance at alpha=0.05",
+            "above_chance": true
+          },
+          "mde_method": "binomial_approx"
+        }
+      },
+      "report_html": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>同样的榜面，只有 120 个 item — MARGINAL</title>\n<style>\n  :root {\n    color-scheme: light;\n    --ink: #171717;\n    --muted: #5f6368;\n    --line: #d9dde3;\n    --paper: #ffffff;\n    --wash: #f6f7f9;\n  }\n  * { box-sizing: border-box; }\n  body {\n    margin: 0;\n    background: var(--wash);\n    color: var(--ink);\n    font: 15px/1.55 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Noto Sans CJK SC\",\n          \"Noto Sans\", Arial, sans-serif;\n  }\n  main { max-width: 980px; margin: 0 auto; padding: 36px 22px 56px; }\n  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }\n  h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 18px; }\n  h2 { font-size: 18px; margin: 30px 0 10px; }\n  .verdict {\n    display: inline-block; color: #fff; background: #9a6700;\n    padding: 7px 12px; border-radius: 999px; font-weight: 700;\n    letter-spacing: .04em;\n  }\n  .meaning { margin: 12px 0 0; max-width: 70ch; color: var(--muted); }\n  .grid {\n    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n    gap: 12px; margin: 26px 0 0;\n  }\n  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }\n  .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }\n  .value { font-size: 22px; font-weight: 650; margin-top: 4px; font-variant-numeric: tabular-nums; }\n  .note { font-size: 12px; color: var(--muted); margin-top: 4px; }\n  section { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 18px; margin-top: 16px; }\n  ul { margin: 8px 0 0; padding-left: 22px; }\n  li { margin: 6px 0; }\n  table.kv { border-collapse: collapse; width: 100%; margin-top: 8px; }\n  table.kv th, table.kv td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; }\n  table.kv th { width: 34%; color: var(--muted); font-weight: 600; }\n  details { margin-top: 16px; }\n  summary { cursor: pointer; color: var(--muted); }\n  pre { overflow: auto; background: var(--wash); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 12px; }\n  .repro { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-top: 16px; }\n  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }\n  footer { margin-top: 28px; color: var(--muted); font-size: 12px; }\n</style>\n</head>\n<body>\n<main>\n  <div class=\"eyebrow\">arx / benchmark readability audit</div>\n  <h1>同样的榜面，只有 120 个 item</h1>\n  <div class=\"verdict\">MARGINAL</div>\n  <p class=\"meaning\">The gap is positive but inside what this sample can resolve. Collect more items before claiming a difference.</p>\n\n  <div class=\"grid\">\n    <div class=\"card\"><div class=\"label\">Leader</div><div class=\"value\">strong</div><div class=\"note\">score=0.9600</div></div>\n    <div class=\"card\"><div class=\"label\">Noise floor</div><div class=\"value\">0.9333</div><div class=\"note\">loo</div></div>\n    <div class=\"card\"><div class=\"label\">Margin over floor</div><div class=\"value\">0.0267</div></div>\n    <div class=\"card\"><div class=\"label\">Resolution bound</div><div class=\"value\">0.0501</div><div class=\"note\">declared delta=0.0200; MDE=0.0501</div></div>\n    <div class=\"card\"><div class=\"label\">Items</div><div class=\"value\">120</div><div class=\"note\">floor on 120</div></div>\n    <div class=\"card\"><div class=\"label\">Gold generators</div><div class=\"value\">5</div></div>\n    <div class=\"card\"><div class=\"label\">Contestants</div><div class=\"value\">2</div></div>\n  </div>\n\n  <section>\n    <h2>Why this verdict</h2>\n    <ul><li>margin +0.0267 is inside the resolution bound 0.0501</li></ul>\n  </section>\n\n  \n  <details><summary>Extra diagnostics</summary><pre>{\n  &quot;alpha&quot;: 0.05,\n  &quot;power&quot;: 0.8,\n  &quot;per_generator_floor&quot;: [\n    0.9333,\n    0.95,\n    0.9167,\n    0.9333,\n    0.9333\n  ],\n  &quot;chance_level&quot;: 0.5,\n  &quot;floor_vs_chance&quot;: {\n    &quot;z&quot;: 9.49385766342288,\n    &quot;critical_z&quot;: 1.9599639845400536,\n    &quot;se&quot;: 0.04564354645876384,\n    &quot;n_items&quot;: 120,\n    &quot;n_items_needed&quot;: 6,\n    &quot;note&quot;: &quot;6 items would put this floor above chance at alpha=0.05&quot;,\n    &quot;above_chance&quot;: true\n  },\n  &quot;mde_method&quot;: &quot;binomial_approx&quot;\n}</pre></details>\n\n  <div class=\"repro\">\n    <strong>Reproduce.</strong>\n    <code>arx audit &lt;leaderboard.json&gt; --html &lt;report.html&gt;</code>\n    <div class=\"note\">The verdict is computed from the input JSON only. No network, no model.</div>\n  </div>\n\n  <details>\n    <summary>Raw report</summary>\n    <pre>{\n  &quot;verdict&quot;: &quot;MARGINAL&quot;,\n  &quot;reasons&quot;: [\n    &quot;margin +0.0267 is inside the resolution bound 0.0501&quot;\n  ],\n  &quot;leader_system&quot;: &quot;strong&quot;,\n  &quot;leader_score&quot;: 0.96,\n  &quot;floor_estimate&quot;: 0.9333333333333333,\n  &quot;margin&quot;: 0.026666666666666616,\n  &quot;delta_declared&quot;: 0.02,\n  &quot;mde&quot;: 0.050116279939673394,\n  &quot;threshold&quot;: 0.050116279939673394,\n  &quot;n_items&quot;: 120,\n  &quot;n_floor_items&quot;: 120,\n  &quot;n_generators&quot;: 5,\n  &quot;n_contestants&quot;: 2,\n  &quot;floor_method&quot;: &quot;loo&quot;,\n  &quot;sequential&quot;: null,\n  &quot;extra&quot;: {\n    &quot;alpha&quot;: 0.05,\n    &quot;power&quot;: 0.8,\n    &quot;per_generator_floor&quot;: [\n      0.9333,\n      0.95,\n      0.9167,\n      0.9333,\n      0.9333\n    ],\n    &quot;chance_level&quot;: 0.5,\n    &quot;floor_vs_chance&quot;: {\n      &quot;z&quot;: 9.49385766342288,\n      &quot;critical_z&quot;: 1.9599639845400536,\n      &quot;se&quot;: 0.04564354645876384,\n      &quot;n_items&quot;: 120,\n      &quot;n_items_needed&quot;: 6,\n      &quot;note&quot;: &quot;6 items would put this floor above chance at alpha=0.05&quot;,\n      &quot;above_chance&quot;: true\n    },\n    &quot;mde_method&quot;: &quot;binomial_approx&quot;\n  }\n}</pre>\n  </details>\n\n  <footer>\n    Generated 2026-10-22T07:12:44+00:00 by arx. A refusal is the tool working.\n  </footer>\n</main>\n</body>\n</html>\n",
+      "source": {
+        "kind": "recomputed",
+        "audit": "arx.audit.audit_leaderboard",
+        "renderer": "arx.audit.report_html.render_html"
+      }
+    },
+    {
+      "id": "unreadable",
+      "title": "领先者没有清过噪声地板",
+      "question": "strong=0.86 真的高于这些标签自身的复现率吗？",
+      "verdict": "UNREADABLE",
+      "meaning": "领先者没有清过噪声地板；这份测量不支持这个排名。",
+      "reasons": [
+        "leader strong (0.8600) is at or below the measured noise floor (0.9210)"
+      ],
+      "reason_codes": [
+        "leader strong (0.8600) is at or below the measured noise floor (0.9210)"
+      ],
+      "metrics": [
+        {
+          "label": "噪声地板",
+          "value": "0.9210",
+          "source": "AuditReport.floor_estimate"
+        },
+        {
+          "label": "领先者",
+          "value": "strong = 0.8600",
+          "source": "AuditReport.leader_system / leader_score"
+        },
+        {
+          "label": "高出地板",
+          "value": "-0.0610",
+          "source": "AuditReport.margin"
+        },
+        {
+          "label": "分辨率下界",
+          "value": "0.0486",
+          "source": "AuditReport.threshold"
+        },
+        {
+          "label": "MDE",
+          "value": "0.0486",
+          "source": "AuditReport.mde"
+        },
+        {
+          "label": "items",
+          "value": 400,
+          "source": "AuditReport.n_items"
+        },
+        {
+          "label": "generators",
+          "value": 5,
+          "source": "AuditReport.n_generators"
+        }
+      ],
+      "chance": {
+        "above_chance": true,
+        "z": 16.839999999999996,
+        "critical_z": 1.9599639845400536,
+        "n_items_needed": 6,
+        "source": "AuditReport.extra.floor_vs_chance"
+      },
+      "notes": [],
+      "board": {
+        "n_generators": 5,
+        "n_items": 400,
+        "agreement": 0.93,
+        "seed": 0,
+        "scores": {
+          "strong": 0.86,
+          "weak": 0.82
+        },
+        "delta_declared": 0.02,
+        "judge_ids": [
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "g5"
+        ],
+        "contestant_ids": [
+          "strong",
+          "weak"
+        ],
+        "votes_sha256_16": "27602db8d518e5a1"
+      },
+      "report": {
+        "verdict": "UNREADABLE",
+        "reasons": [
+          "leader strong (0.8600) is at or below the measured noise floor (0.9210)"
+        ],
+        "leader_system": "strong",
+        "leader_score": 0.86,
+        "floor_estimate": 0.9209999999999999,
+        "margin": -0.06099999999999994,
+        "delta_declared": 0.02,
+        "mde": 0.048605686910474524,
+        "threshold": 0.048605686910474524,
+        "n_items": 400,
+        "n_floor_items": 400,
+        "n_generators": 5,
+        "n_contestants": 2,
+        "floor_method": "loo",
+        "sequential": null,
+        "extra": {
+          "alpha": 0.05,
+          "power": 0.8,
+          "per_generator_floor": [
+            0.92,
+            0.9325,
+            0.92,
+            0.9025,
+            0.93
+          ],
+          "chance_level": 0.5,
+          "floor_vs_chance": {
+            "z": 16.839999999999996,
+            "critical_z": 1.9599639845400536,
+            "se": 0.025,
+            "n_items": 400,
+            "n_items_needed": 6,
+            "note": "6 items would put this floor above chance at alpha=0.05",
+            "above_chance": true
+          },
+          "mde_method": "binomial_approx"
+        }
+      },
+      "report_html": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>领先者没有清过噪声地板 — UNREADABLE</title>\n<style>\n  :root {\n    color-scheme: light;\n    --ink: #171717;\n    --muted: #5f6368;\n    --line: #d9dde3;\n    --paper: #ffffff;\n    --wash: #f6f7f9;\n  }\n  * { box-sizing: border-box; }\n  body {\n    margin: 0;\n    background: var(--wash);\n    color: var(--ink);\n    font: 15px/1.55 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Noto Sans CJK SC\",\n          \"Noto Sans\", Arial, sans-serif;\n  }\n  main { max-width: 980px; margin: 0 auto; padding: 36px 22px 56px; }\n  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }\n  h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 18px; }\n  h2 { font-size: 18px; margin: 30px 0 10px; }\n  .verdict {\n    display: inline-block; color: #fff; background: #b42318;\n    padding: 7px 12px; border-radius: 999px; font-weight: 700;\n    letter-spacing: .04em;\n  }\n  .meaning { margin: 12px 0 0; max-width: 70ch; color: var(--muted); }\n  .grid {\n    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n    gap: 12px; margin: 26px 0 0;\n  }\n  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }\n  .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }\n  .value { font-size: 22px; font-weight: 650; margin-top: 4px; font-variant-numeric: tabular-nums; }\n  .note { font-size: 12px; color: var(--muted); margin-top: 4px; }\n  section { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 18px; margin-top: 16px; }\n  ul { margin: 8px 0 0; padding-left: 22px; }\n  li { margin: 6px 0; }\n  table.kv { border-collapse: collapse; width: 100%; margin-top: 8px; }\n  table.kv th, table.kv td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; }\n  table.kv th { width: 34%; color: var(--muted); font-weight: 600; }\n  details { margin-top: 16px; }\n  summary { cursor: pointer; color: var(--muted); }\n  pre { overflow: auto; background: var(--wash); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 12px; }\n  .repro { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-top: 16px; }\n  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }\n  footer { margin-top: 28px; color: var(--muted); font-size: 12px; }\n</style>\n</head>\n<body>\n<main>\n  <div class=\"eyebrow\">arx / benchmark readability audit</div>\n  <h1>领先者没有清过噪声地板</h1>\n  <div class=\"verdict\">UNREADABLE</div>\n  <p class=\"meaning\">The leader does not clear the noise floor. The ranking is not supported by this measurement.</p>\n\n  <div class=\"grid\">\n    <div class=\"card\"><div class=\"label\">Leader</div><div class=\"value\">strong</div><div class=\"note\">score=0.8600</div></div>\n    <div class=\"card\"><div class=\"label\">Noise floor</div><div class=\"value\">0.9210</div><div class=\"note\">loo</div></div>\n    <div class=\"card\"><div class=\"label\">Margin over floor</div><div class=\"value\">-0.0610</div></div>\n    <div class=\"card\"><div class=\"label\">Resolution bound</div><div class=\"value\">0.0486</div><div class=\"note\">declared delta=0.0200; MDE=0.0486</div></div>\n    <div class=\"card\"><div class=\"label\">Items</div><div class=\"value\">400</div><div class=\"note\">floor on 400</div></div>\n    <div class=\"card\"><div class=\"label\">Gold generators</div><div class=\"value\">5</div></div>\n    <div class=\"card\"><div class=\"label\">Contestants</div><div class=\"value\">2</div></div>\n  </div>\n\n  <section>\n    <h2>Why this verdict</h2>\n    <ul><li>leader strong (0.8600) is at or below the measured noise floor (0.9210)</li></ul>\n  </section>\n\n  \n  <details><summary>Extra diagnostics</summary><pre>{\n  &quot;alpha&quot;: 0.05,\n  &quot;power&quot;: 0.8,\n  &quot;per_generator_floor&quot;: [\n    0.92,\n    0.9325,\n    0.92,\n    0.9025,\n    0.93\n  ],\n  &quot;chance_level&quot;: 0.5,\n  &quot;floor_vs_chance&quot;: {\n    &quot;z&quot;: 16.839999999999996,\n    &quot;critical_z&quot;: 1.9599639845400536,\n    &quot;se&quot;: 0.025,\n    &quot;n_items&quot;: 400,\n    &quot;n_items_needed&quot;: 6,\n    &quot;note&quot;: &quot;6 items would put this floor above chance at alpha=0.05&quot;,\n    &quot;above_chance&quot;: true\n  },\n  &quot;mde_method&quot;: &quot;binomial_approx&quot;\n}</pre></details>\n\n  <div class=\"repro\">\n    <strong>Reproduce.</strong>\n    <code>arx audit &lt;leaderboard.json&gt; --html &lt;report.html&gt;</code>\n    <div class=\"note\">The verdict is computed from the input JSON only. No network, no model.</div>\n  </div>\n\n  <details>\n    <summary>Raw report</summary>\n    <pre>{\n  &quot;verdict&quot;: &quot;UNREADABLE&quot;,\n  &quot;reasons&quot;: [\n    &quot;leader strong (0.8600) is at or below the measured noise floor (0.9210)&quot;\n  ],\n  &quot;leader_system&quot;: &quot;strong&quot;,\n  &quot;leader_score&quot;: 0.86,\n  &quot;floor_estimate&quot;: 0.9209999999999999,\n  &quot;margin&quot;: -0.06099999999999994,\n  &quot;delta_declared&quot;: 0.02,\n  &quot;mde&quot;: 0.048605686910474524,\n  &quot;threshold&quot;: 0.048605686910474524,\n  &quot;n_items&quot;: 400,\n  &quot;n_floor_items&quot;: 400,\n  &quot;n_generators&quot;: 5,\n  &quot;n_contestants&quot;: 2,\n  &quot;floor_method&quot;: &quot;loo&quot;,\n  &quot;sequential&quot;: null,\n  &quot;extra&quot;: {\n    &quot;alpha&quot;: 0.05,\n    &quot;power&quot;: 0.8,\n    &quot;per_generator_floor&quot;: [\n      0.92,\n      0.9325,\n      0.92,\n      0.9025,\n      0.93\n    ],\n    &quot;chance_level&quot;: 0.5,\n    &quot;floor_vs_chance&quot;: {\n      &quot;z&quot;: 16.839999999999996,\n      &quot;critical_z&quot;: 1.9599639845400536,\n      &quot;se&quot;: 0.025,\n      &quot;n_items&quot;: 400,\n      &quot;n_items_needed&quot;: 6,\n      &quot;note&quot;: &quot;6 items would put this floor above chance at alpha=0.05&quot;,\n      &quot;above_chance&quot;: true\n    },\n    &quot;mde_method&quot;: &quot;binomial_approx&quot;\n  }\n}</pre>\n  </details>\n\n  <footer>\n    Generated 2026-10-22T07:12:44+00:00 by arx. A refusal is the tool working.\n  </footer>\n</main>\n</body>\n</html>\n",
+      "source": {
+        "kind": "recomputed",
+        "audit": "arx.audit.audit_leaderboard",
+        "renderer": "arx.audit.report_html.render_html"
+      }
+    },
+    {
+      "id": "two_generators",
+      "title": "只有两名生成者",
+      "question": "去掉一个评审者后，地板还能估计吗？",
+      "verdict": "UNDECIDABLE",
+      "meaning": "前提不成立，无法估计地板。这是一个结论，不是分析失败。",
+      "reasons": [
+        "地板退化：没有可估计的独立复现地板，或地板未能高于随机水平。"
+      ],
+      "reason_codes": [
+        "floor_degenerate"
+      ],
+      "metrics": [
+        {
+          "label": "噪声地板",
+          "value": "—",
+          "source": "AuditReport.floor_estimate"
+        },
+        {
+          "label": "领先者",
+          "value": "—",
+          "source": "AuditReport.leader_system / leader_score"
+        },
+        {
+          "label": "高出地板",
+          "value": "—",
+          "source": "AuditReport.margin"
+        },
+        {
+          "label": "分辨率下界",
+          "value": "—",
+          "source": "AuditReport.threshold"
+        },
+        {
+          "label": "MDE",
+          "value": "—",
+          "source": "AuditReport.mde"
+        },
+        {
+          "label": "items",
+          "value": 400,
+          "source": "AuditReport.n_items"
+        },
+        {
+          "label": "generators",
+          "value": 2,
+          "source": "AuditReport.n_generators"
+        }
+      ],
+      "chance": null,
+      "notes": [],
+      "board": {
+        "n_generators": 2,
+        "n_items": 400,
+        "agreement": 0.93,
+        "seed": 0,
+        "scores": {
+          "strong": 0.96,
+          "weak": 0.6
+        },
+        "delta_declared": 0.02,
+        "judge_ids": [
+          "g1",
+          "g2"
+        ],
+        "contestant_ids": [
+          "strong",
+          "weak"
+        ],
+        "votes_sha256_16": "050ef5cccc5d7301"
+      },
+      "report": {
+        "verdict": "UNDECIDABLE",
+        "reasons": [
+          "floor_degenerate"
+        ],
+        "leader_system": null,
+        "leader_score": null,
+        "floor_estimate": null,
+        "margin": null,
+        "delta_declared": 0.02,
+        "mde": null,
+        "threshold": null,
+        "n_items": 400,
+        "n_floor_items": 400,
+        "n_generators": 2,
+        "n_contestants": 2,
+        "floor_method": "",
+        "sequential": null,
+        "extra": {
+          "alpha": 0.05,
+          "power": 0.8,
+          "note": "with two generators, leave-one-out leaves one, so the floor degenerates into pairwise agreement; it cannot be estimated"
+        }
+      },
+      "report_html": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>只有两名生成者 — UNDECIDABLE</title>\n<style>\n  :root {\n    color-scheme: light;\n    --ink: #171717;\n    --muted: #5f6368;\n    --line: #d9dde3;\n    --paper: #ffffff;\n    --wash: #f6f7f9;\n  }\n  * { box-sizing: border-box; }\n  body {\n    margin: 0;\n    background: var(--wash);\n    color: var(--ink);\n    font: 15px/1.55 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Noto Sans CJK SC\",\n          \"Noto Sans\", Arial, sans-serif;\n  }\n  main { max-width: 980px; margin: 0 auto; padding: 36px 22px 56px; }\n  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }\n  h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 18px; }\n  h2 { font-size: 18px; margin: 30px 0 10px; }\n  .verdict {\n    display: inline-block; color: #fff; background: #6b4fbb;\n    padding: 7px 12px; border-radius: 999px; font-weight: 700;\n    letter-spacing: .04em;\n  }\n  .meaning { margin: 12px 0 0; max-width: 70ch; color: var(--muted); }\n  .grid {\n    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n    gap: 12px; margin: 26px 0 0;\n  }\n  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }\n  .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }\n  .value { font-size: 22px; font-weight: 650; margin-top: 4px; font-variant-numeric: tabular-nums; }\n  .note { font-size: 12px; color: var(--muted); margin-top: 4px; }\n  section { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 18px; margin-top: 16px; }\n  ul { margin: 8px 0 0; padding-left: 22px; }\n  li { margin: 6px 0; }\n  table.kv { border-collapse: collapse; width: 100%; margin-top: 8px; }\n  table.kv th, table.kv td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; }\n  table.kv th { width: 34%; color: var(--muted); font-weight: 600; }\n  details { margin-top: 16px; }\n  summary { cursor: pointer; color: var(--muted); }\n  pre { overflow: auto; background: var(--wash); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 12px; }\n  .repro { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-top: 16px; }\n  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }\n  footer { margin-top: 28px; color: var(--muted); font-size: 12px; }\n</style>\n</head>\n<body>\n<main>\n  <div class=\"eyebrow\">arx / benchmark readability audit</div>\n  <h1>只有两名生成者</h1>\n  <div class=\"verdict\">UNDECIDABLE</div>\n  <p class=\"meaning\">The premises are violated; no floor is estimable. This is a finding, not a failure of the analysis.</p>\n\n  <div class=\"grid\">\n    <div class=\"card\"><div class=\"label\">Leader</div><div class=\"value\">—</div><div class=\"note\">score=—</div></div>\n    <div class=\"card\"><div class=\"label\">Noise floor</div><div class=\"value\">—</div><div class=\"note\">unknown method</div></div>\n    <div class=\"card\"><div class=\"label\">Margin over floor</div><div class=\"value\">—</div></div>\n    <div class=\"card\"><div class=\"label\">Resolution bound</div><div class=\"value\">—</div><div class=\"note\">declared delta=0.0200</div></div>\n    <div class=\"card\"><div class=\"label\">Items</div><div class=\"value\">400</div><div class=\"note\">floor on 400</div></div>\n    <div class=\"card\"><div class=\"label\">Gold generators</div><div class=\"value\">2</div></div>\n    <div class=\"card\"><div class=\"label\">Contestants</div><div class=\"value\">2</div></div>\n  </div>\n\n  <section>\n    <h2>Why this verdict</h2>\n    <ul><li>floor_degenerate</li></ul>\n  </section>\n\n  \n  <details><summary>Extra diagnostics</summary><pre>{\n  &quot;alpha&quot;: 0.05,\n  &quot;power&quot;: 0.8,\n  &quot;note&quot;: &quot;with two generators, leave-one-out leaves one, so the floor degenerates into pairwise agreement; it cannot be estimated&quot;\n}</pre></details>\n\n  <div class=\"repro\">\n    <strong>Reproduce.</strong>\n    <code>arx audit &lt;leaderboard.json&gt; --html &lt;report.html&gt;</code>\n    <div class=\"note\">The verdict is computed from the input JSON only. No network, no model.</div>\n  </div>\n\n  <details>\n    <summary>Raw report</summary>\n    <pre>{\n  &quot;verdict&quot;: &quot;UNDECIDABLE&quot;,\n  &quot;reasons&quot;: [\n    &quot;floor_degenerate&quot;\n  ],\n  &quot;leader_system&quot;: null,\n  &quot;leader_score&quot;: null,\n  &quot;floor_estimate&quot;: null,\n  &quot;margin&quot;: null,\n  &quot;delta_declared&quot;: 0.02,\n  &quot;mde&quot;: null,\n  &quot;threshold&quot;: null,\n  &quot;n_items&quot;: 400,\n  &quot;n_floor_items&quot;: 400,\n  &quot;n_generators&quot;: 2,\n  &quot;n_contestants&quot;: 2,\n  &quot;floor_method&quot;: &quot;&quot;,\n  &quot;sequential&quot;: null,\n  &quot;extra&quot;: {\n    &quot;alpha&quot;: 0.05,\n    &quot;power&quot;: 0.8,\n    &quot;note&quot;: &quot;with two generators, leave-one-out leaves one, so the floor degenerates into pairwise agreement; it cannot be estimated&quot;\n  }\n}</pre>\n  </details>\n\n  <footer>\n    Generated 2026-10-22T07:12:44+00:00 by arx. A refusal is the tool working.\n  </footer>\n</main>\n</body>\n</html>\n",
+      "source": {
+        "kind": "recomputed",
+        "audit": "arx.audit.audit_leaderboard",
+        "renderer": "arx.audit.report_html.render_html"
+      }
+    },
+    {
+      "id": "actors_overlap",
+      "title": "评审者同时是参赛者",
+      "question": "如果 strong 也参与了 gold，它是在和自己比吗？",
+      "verdict": "UNDECIDABLE",
+      "meaning": "前提不成立，无法估计地板。这是一个结论，不是分析失败。",
+      "reasons": [
+        "评审者与参赛者有交集；地板测到的是同伴分布，不是测量误差。"
+      ],
+      "reason_codes": [
+        "actors_overlap"
+      ],
+      "metrics": [
+        {
+          "label": "噪声地板",
+          "value": "—",
+          "source": "AuditReport.floor_estimate"
+        },
+        {
+          "label": "领先者",
+          "value": "—",
+          "source": "AuditReport.leader_system / leader_score"
+        },
+        {
+          "label": "高出地板",
+          "value": "—",
+          "source": "AuditReport.margin"
+        },
+        {
+          "label": "分辨率下界",
+          "value": "—",
+          "source": "AuditReport.threshold"
+        },
+        {
+          "label": "MDE",
+          "value": "—",
+          "source": "AuditReport.mde"
+        },
+        {
+          "label": "items",
+          "value": 400,
+          "source": "AuditReport.n_items"
+        },
+        {
+          "label": "generators",
+          "value": 5,
+          "source": "AuditReport.n_generators"
+        }
+      ],
+      "chance": null,
+      "notes": [
+        "重叠的 actor：strong"
+      ],
+      "board": {
+        "n_generators": 5,
+        "n_items": 400,
+        "agreement": 0.93,
+        "seed": 0,
+        "scores": {
+          "strong": 0.96,
+          "weak": 0.6
+        },
+        "delta_declared": 0.02,
+        "judge_ids": [
+          "strong",
+          "g2",
+          "g3",
+          "g4",
+          "g5"
+        ],
+        "contestant_ids": [
+          "strong",
+          "weak"
+        ],
+        "votes_sha256_16": "27602db8d518e5a1"
+      },
+      "report": {
+        "verdict": "UNDECIDABLE",
+        "reasons": [
+          "actors_overlap"
+        ],
+        "leader_system": null,
+        "leader_score": null,
+        "floor_estimate": null,
+        "margin": null,
+        "delta_declared": 0.02,
+        "mde": null,
+        "threshold": null,
+        "n_items": 400,
+        "n_floor_items": 400,
+        "n_generators": 5,
+        "n_contestants": 2,
+        "floor_method": "",
+        "sequential": null,
+        "extra": {
+          "alpha": 0.05,
+          "power": 0.8,
+          "overlapping_actors": [
+            "strong"
+          ]
+        }
+      },
+      "report_html": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>评审者同时是参赛者 — UNDECIDABLE</title>\n<style>\n  :root {\n    color-scheme: light;\n    --ink: #171717;\n    --muted: #5f6368;\n    --line: #d9dde3;\n    --paper: #ffffff;\n    --wash: #f6f7f9;\n  }\n  * { box-sizing: border-box; }\n  body {\n    margin: 0;\n    background: var(--wash);\n    color: var(--ink);\n    font: 15px/1.55 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Noto Sans CJK SC\",\n          \"Noto Sans\", Arial, sans-serif;\n  }\n  main { max-width: 980px; margin: 0 auto; padding: 36px 22px 56px; }\n  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }\n  h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 18px; }\n  h2 { font-size: 18px; margin: 30px 0 10px; }\n  .verdict {\n    display: inline-block; color: #fff; background: #6b4fbb;\n    padding: 7px 12px; border-radius: 999px; font-weight: 700;\n    letter-spacing: .04em;\n  }\n  .meaning { margin: 12px 0 0; max-width: 70ch; color: var(--muted); }\n  .grid {\n    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n    gap: 12px; margin: 26px 0 0;\n  }\n  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }\n  .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }\n  .value { font-size: 22px; font-weight: 650; margin-top: 4px; font-variant-numeric: tabular-nums; }\n  .note { font-size: 12px; color: var(--muted); margin-top: 4px; }\n  section { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 18px; margin-top: 16px; }\n  ul { margin: 8px 0 0; padding-left: 22px; }\n  li { margin: 6px 0; }\n  table.kv { border-collapse: collapse; width: 100%; margin-top: 8px; }\n  table.kv th, table.kv td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; }\n  table.kv th { width: 34%; color: var(--muted); font-weight: 600; }\n  details { margin-top: 16px; }\n  summary { cursor: pointer; color: var(--muted); }\n  pre { overflow: auto; background: var(--wash); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 12px; }\n  .repro { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-top: 16px; }\n  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }\n  footer { margin-top: 28px; color: var(--muted); font-size: 12px; }\n</style>\n</head>\n<body>\n<main>\n  <div class=\"eyebrow\">arx / benchmark readability audit</div>\n  <h1>评审者同时是参赛者</h1>\n  <div class=\"verdict\">UNDECIDABLE</div>\n  <p class=\"meaning\">The premises are violated; no floor is estimable. This is a finding, not a failure of the analysis.</p>\n\n  <div class=\"grid\">\n    <div class=\"card\"><div class=\"label\">Leader</div><div class=\"value\">—</div><div class=\"note\">score=—</div></div>\n    <div class=\"card\"><div class=\"label\">Noise floor</div><div class=\"value\">—</div><div class=\"note\">unknown method</div></div>\n    <div class=\"card\"><div class=\"label\">Margin over floor</div><div class=\"value\">—</div></div>\n    <div class=\"card\"><div class=\"label\">Resolution bound</div><div class=\"value\">—</div><div class=\"note\">declared delta=0.0200</div></div>\n    <div class=\"card\"><div class=\"label\">Items</div><div class=\"value\">400</div><div class=\"note\">floor on 400</div></div>\n    <div class=\"card\"><div class=\"label\">Gold generators</div><div class=\"value\">5</div></div>\n    <div class=\"card\"><div class=\"label\">Contestants</div><div class=\"value\">2</div></div>\n  </div>\n\n  <section>\n    <h2>Why this verdict</h2>\n    <ul><li>actors_overlap</li></ul>\n  </section>\n\n  \n  <details><summary>Extra diagnostics</summary><pre>{\n  &quot;alpha&quot;: 0.05,\n  &quot;power&quot;: 0.8,\n  &quot;overlapping_actors&quot;: [\n    &quot;strong&quot;\n  ]\n}</pre></details>\n\n  <div class=\"repro\">\n    <strong>Reproduce.</strong>\n    <code>arx audit &lt;leaderboard.json&gt; --html &lt;report.html&gt;</code>\n    <div class=\"note\">The verdict is computed from the input JSON only. No network, no model.</div>\n  </div>\n\n  <details>\n    <summary>Raw report</summary>\n    <pre>{\n  &quot;verdict&quot;: &quot;UNDECIDABLE&quot;,\n  &quot;reasons&quot;: [\n    &quot;actors_overlap&quot;\n  ],\n  &quot;leader_system&quot;: null,\n  &quot;leader_score&quot;: null,\n  &quot;floor_estimate&quot;: null,\n  &quot;margin&quot;: null,\n  &quot;delta_declared&quot;: 0.02,\n  &quot;mde&quot;: null,\n  &quot;threshold&quot;: null,\n  &quot;n_items&quot;: 400,\n  &quot;n_floor_items&quot;: 400,\n  &quot;n_generators&quot;: 5,\n  &quot;n_contestants&quot;: 2,\n  &quot;floor_method&quot;: &quot;&quot;,\n  &quot;sequential&quot;: null,\n  &quot;extra&quot;: {\n    &quot;alpha&quot;: 0.05,\n    &quot;power&quot;: 0.8,\n    &quot;overlapping_actors&quot;: [\n      &quot;strong&quot;\n    ]\n  }\n}</pre>\n  </details>\n\n  <footer>\n    Generated 2026-10-22T07:12:44+00:00 by arx. A refusal is the tool working.\n  </footer>\n</main>\n</body>\n</html>\n",
+      "source": {
+        "kind": "recomputed",
+        "audit": "arx.audit.audit_leaderboard",
+        "renderer": "arx.audit.report_html.render_html"
+      }
+    },
+    {
+      "id": "noise",
+      "title": "五名生成者只在掷硬币",
+      "question": "地板接近随机时，领先者的大 margin 还意味着什么？",
+      "verdict": "UNDECIDABLE",
+      "meaning": "前提不成立，无法估计地板。这是一个结论，不是分析失败。",
+      "reasons": [
+        "地板退化：没有可估计的独立复现地板，或地板未能高于随机水平。"
+      ],
+      "reason_codes": [
+        "floor_degenerate"
+      ],
+      "metrics": [
+        {
+          "label": "噪声地板",
+          "value": "0.4640",
+          "source": "AuditReport.floor_estimate"
+        },
+        {
+          "label": "领先者",
+          "value": "—",
+          "source": "AuditReport.leader_system / leader_score"
+        },
+        {
+          "label": "高出地板",
+          "value": "—",
+          "source": "AuditReport.margin"
+        },
+        {
+          "label": "分辨率下界",
+          "value": "—",
+          "source": "AuditReport.threshold"
+        },
+        {
+          "label": "MDE",
+          "value": "—",
+          "source": "AuditReport.mde"
+        },
+        {
+          "label": "items",
+          "value": 400,
+          "source": "AuditReport.n_items"
+        },
+        {
+          "label": "generators",
+          "value": 5,
+          "source": "AuditReport.n_generators"
+        }
+      ],
+      "chance": {
+        "above_chance": false,
+        "z": -1.4399999999999968,
+        "critical_z": 1.9599639845400536,
+        "n_items_needed": null,
+        "source": "AuditReport.extra.floor_vs_chance"
+      },
+      "notes": [
+        "the measured floor (0.4640) is not detectably above the chance level (0.5000) at n=400 items (z=-1.44 < 1.96): the generators do not demonstrably reproduce anything, so there is no gold for a score to be measured against"
+      ],
+      "board": {
+        "n_generators": 5,
+        "n_items": 400,
+        "agreement": null,
+        "seed": 7,
+        "scores": {
+          "padded": 0.965,
+          "plain": 0.7
+        },
+        "delta_declared": 0.02,
+        "judge_ids": [
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "g5"
+        ],
+        "contestant_ids": [
+          "padded",
+          "plain"
+        ],
+        "note": "pure coin-flip generators; floor is not above chance",
+        "votes_sha256_16": "394cec73e0a84670"
+      },
+      "report": {
+        "verdict": "UNDECIDABLE",
+        "reasons": [
+          "floor_degenerate"
+        ],
+        "leader_system": null,
+        "leader_score": null,
+        "floor_estimate": 0.4640000000000001,
+        "margin": null,
+        "delta_declared": 0.02,
+        "mde": null,
+        "threshold": null,
+        "n_items": 400,
+        "n_floor_items": 400,
+        "n_generators": 5,
+        "n_contestants": 2,
+        "floor_method": "loo",
+        "sequential": null,
+        "extra": {
+          "alpha": 0.05,
+          "power": 0.8,
+          "per_generator_floor": [
+            0.46,
+            0.44,
+            0.46,
+            0.49,
+            0.47
+          ],
+          "chance_level": 0.5,
+          "floor_vs_chance": {
+            "z": -1.4399999999999968,
+            "critical_z": 1.9599639845400536,
+            "se": 0.025,
+            "n_items": 400,
+            "n_items_needed": null,
+            "note": "the floor (0.4640) is at or below the chance level (0.5000); no sample size makes it informative",
+            "above_chance": false
+          },
+          "floor_error": "the measured floor (0.4640) is not detectably above the chance level (0.5000) at n=400 items (z=-1.44 < 1.96): the generators do not demonstrably reproduce anything, so there is no gold for a score to be measured against"
+        }
+      },
+      "report_html": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>五名生成者只在掷硬币 — UNDECIDABLE</title>\n<style>\n  :root {\n    color-scheme: light;\n    --ink: #171717;\n    --muted: #5f6368;\n    --line: #d9dde3;\n    --paper: #ffffff;\n    --wash: #f6f7f9;\n  }\n  * { box-sizing: border-box; }\n  body {\n    margin: 0;\n    background: var(--wash);\n    color: var(--ink);\n    font: 15px/1.55 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Noto Sans CJK SC\",\n          \"Noto Sans\", Arial, sans-serif;\n  }\n  main { max-width: 980px; margin: 0 auto; padding: 36px 22px 56px; }\n  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }\n  h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 18px; }\n  h2 { font-size: 18px; margin: 30px 0 10px; }\n  .verdict {\n    display: inline-block; color: #fff; background: #6b4fbb;\n    padding: 7px 12px; border-radius: 999px; font-weight: 700;\n    letter-spacing: .04em;\n  }\n  .meaning { margin: 12px 0 0; max-width: 70ch; color: var(--muted); }\n  .grid {\n    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n    gap: 12px; margin: 26px 0 0;\n  }\n  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }\n  .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }\n  .value { font-size: 22px; font-weight: 650; margin-top: 4px; font-variant-numeric: tabular-nums; }\n  .note { font-size: 12px; color: var(--muted); margin-top: 4px; }\n  section { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 18px; margin-top: 16px; }\n  ul { margin: 8px 0 0; padding-left: 22px; }\n  li { margin: 6px 0; }\n  table.kv { border-collapse: collapse; width: 100%; margin-top: 8px; }\n  table.kv th, table.kv td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; }\n  table.kv th { width: 34%; color: var(--muted); font-weight: 600; }\n  details { margin-top: 16px; }\n  summary { cursor: pointer; color: var(--muted); }\n  pre { overflow: auto; background: var(--wash); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 12px; }\n  .repro { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-top: 16px; }\n  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }\n  footer { margin-top: 28px; color: var(--muted); font-size: 12px; }\n</style>\n</head>\n<body>\n<main>\n  <div class=\"eyebrow\">arx / benchmark readability audit</div>\n  <h1>五名生成者只在掷硬币</h1>\n  <div class=\"verdict\">UNDECIDABLE</div>\n  <p class=\"meaning\">The premises are violated; no floor is estimable. This is a finding, not a failure of the analysis.</p>\n\n  <div class=\"grid\">\n    <div class=\"card\"><div class=\"label\">Leader</div><div class=\"value\">—</div><div class=\"note\">score=—</div></div>\n    <div class=\"card\"><div class=\"label\">Noise floor</div><div class=\"value\">0.4640</div><div class=\"note\">loo</div></div>\n    <div class=\"card\"><div class=\"label\">Margin over floor</div><div class=\"value\">—</div></div>\n    <div class=\"card\"><div class=\"label\">Resolution bound</div><div class=\"value\">—</div><div class=\"note\">declared delta=0.0200</div></div>\n    <div class=\"card\"><div class=\"label\">Items</div><div class=\"value\">400</div><div class=\"note\">floor on 400</div></div>\n    <div class=\"card\"><div class=\"label\">Gold generators</div><div class=\"value\">5</div></div>\n    <div class=\"card\"><div class=\"label\">Contestants</div><div class=\"value\">2</div></div>\n  </div>\n\n  <section>\n    <h2>Why this verdict</h2>\n    <ul><li>floor_degenerate</li></ul>\n  </section>\n\n  \n  <details><summary>Extra diagnostics</summary><pre>{\n  &quot;alpha&quot;: 0.05,\n  &quot;power&quot;: 0.8,\n  &quot;per_generator_floor&quot;: [\n    0.46,\n    0.44,\n    0.46,\n    0.49,\n    0.47\n  ],\n  &quot;chance_level&quot;: 0.5,\n  &quot;floor_vs_chance&quot;: {\n    &quot;z&quot;: -1.4399999999999968,\n    &quot;critical_z&quot;: 1.9599639845400536,\n    &quot;se&quot;: 0.025,\n    &quot;n_items&quot;: 400,\n    &quot;n_items_needed&quot;: null,\n    &quot;note&quot;: &quot;the floor (0.4640) is at or below the chance level (0.5000); no sample size makes it informative&quot;,\n    &quot;above_chance&quot;: false\n  },\n  &quot;floor_error&quot;: &quot;the measured floor (0.4640) is not detectably above the chance level (0.5000) at n=400 items (z=-1.44 &lt; 1.96): the generators do not demonstrably reproduce anything, so there is no gold for a score to be measured against&quot;\n}</pre></details>\n\n  <div class=\"repro\">\n    <strong>Reproduce.</strong>\n    <code>arx audit &lt;leaderboard.json&gt; --html &lt;report.html&gt;</code>\n    <div class=\"note\">The verdict is computed from the input JSON only. No network, no model.</div>\n  </div>\n\n  <details>\n    <summary>Raw report</summary>\n    <pre>{\n  &quot;verdict&quot;: &quot;UNDECIDABLE&quot;,\n  &quot;reasons&quot;: [\n    &quot;floor_degenerate&quot;\n  ],\n  &quot;leader_system&quot;: null,\n  &quot;leader_score&quot;: null,\n  &quot;floor_estimate&quot;: 0.4640000000000001,\n  &quot;margin&quot;: null,\n  &quot;delta_declared&quot;: 0.02,\n  &quot;mde&quot;: null,\n  &quot;threshold&quot;: null,\n  &quot;n_items&quot;: 400,\n  &quot;n_floor_items&quot;: 400,\n  &quot;n_generators&quot;: 5,\n  &quot;n_contestants&quot;: 2,\n  &quot;floor_method&quot;: &quot;loo&quot;,\n  &quot;sequential&quot;: null,\n  &quot;extra&quot;: {\n    &quot;alpha&quot;: 0.05,\n    &quot;power&quot;: 0.8,\n    &quot;per_generator_floor&quot;: [\n      0.46,\n      0.44,\n      0.46,\n      0.49,\n      0.47\n    ],\n    &quot;chance_level&quot;: 0.5,\n    &quot;floor_vs_chance&quot;: {\n      &quot;z&quot;: -1.4399999999999968,\n      &quot;critical_z&quot;: 1.9599639845400536,\n      &quot;se&quot;: 0.025,\n      &quot;n_items&quot;: 400,\n      &quot;n_items_needed&quot;: null,\n      &quot;note&quot;: &quot;the floor (0.4640) is at or below the chance level (0.5000); no sample size makes it informative&quot;,\n      &quot;above_chance&quot;: false\n    },\n    &quot;floor_error&quot;: &quot;the measured floor (0.4640) is not detectably above the chance level (0.5000) at n=400 items (z=-1.44 &lt; 1.96): the generators do not demonstrably reproduce anything, so there is no gold for a score to be measured against&quot;\n  }\n}</pre>\n  </details>\n\n  <footer>\n    Generated 2026-10-22T07:12:44+00:00 by arx. A refusal is the tool working.\n  </footer>\n</main>\n</body>\n</html>\n",
+      "source": {
+        "kind": "recomputed",
+        "audit": "arx.audit.audit_leaderboard",
+        "renderer": "arx.audit.report_html.render_html"
+      }
+    }
+  ],
+  "case_study": {
+    "title": "ChaosNLI noise floor（真实数据案例）",
+    "url": "https://github.com/aidless/arx/blob/main/case-studies/chaosnli-noise-floor/README.md",
+    "note": "真实数据上的三条审计；本页不重算它，只链接到一手 case study。"
+  },
+  "boundaries": [
+    "这六个案例是合成投票矩阵，用来行使闸的四种判决；不是真实模型排名。",
+    "READABLE 只说明差距超过测量误差，不说明指标本身是对的。",
+    "闸审计的是榜面的可读性，不审计模型输出是否忠实、任务是否有意义。",
+    "真实数据案例见 case-studies/chaosnli-noise-floor/；本页不重算那份案例。",
+    "报告 HTML 由 arx.audit.report_html 生成；页面不重新实现判决逻辑。"
+  ],
+  "verification": {
+    "status": "MATCH",
+    "cases": 6,
+    "mismatches": [],
+    "expected": {
+      "readable": "READABLE",
+      "marginal": "MARGINAL",
+      "unreadable": "UNREADABLE",
+      "two_generators": "UNDECIDABLE",
+      "actors_overlap": "UNDECIDABLE",
+      "noise": "UNDECIDABLE"
+    }
+  }
+}

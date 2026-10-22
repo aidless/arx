@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>arx · 榜单可读性审计 Demo</title>
+  <meta name="description" content="排名差只有超过标签噪声地板才可读；六个案例展示 arx 的四种判决与拒绝理由。">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">arx · benchmark readability audit</p>
+        <h1>排名差只有超过<br>标签噪声地板，<br>才值得读。</h1>
+        <p class="lede">
+          arx 不回答“这个效应够不够大”，它先回答“这份测量有没有能力分辨这个比较”。
+          六个合成案例在构建时由 <code>arx.audit</code> 重算，判决和拒绝理由都来自真实调用。
+        </p>
+      </div>
+      <div class="mode-card">
+        <span id="mode-badge" class="badge badge-neutral">加载中</span>
+        <p id="mode-note" class="mode-note">正在读取构建产物…</p>
+        <div class="mode-actions">
+          <button id="rerun" class="button" type="button" disabled>重跑全部案例</button>
+          <a id="raw-link" class="button button-ghost" href="./cases.json" target="_blank" rel="noreferrer">查看 cases.json</a>
+        </div>
+        <p id="rerun-status" class="rerun-status" aria-live="polite"></p>
+      </div>
+    </header>
+
+    <div id="error" class="error" hidden></div>
+
+    <section id="summary" class="summary" aria-label="判决分布"></section>
+
+    <main class="layout">
+      <section class="panel case-panel" aria-labelledby="cases-title">
+        <div class="panel-heading">
+          <h2 id="cases-title">案例</h2>
+          <span class="muted">选择一条审计</span>
+        </div>
+        <div id="case-list" class="case-list" role="list"></div>
+      </section>
+
+      <section class="panel detail-panel" aria-labelledby="case-title">
+        <div class="panel-heading">
+          <h2 id="case-title">审计</h2>
+          <span id="case-id" class="muted"></span>
+        </div>
+        <p id="case-question" class="case-question"></p>
+        <div id="verdict" class="verdict-block"></div>
+        <div id="metrics" class="metric-grid"></div>
+        <div id="reasons" class="reasons"></div>
+        <div id="chance" class="chance"></div>
+        <div id="notes" class="notes"></div>
+        <details class="board-details">
+          <summary>这个案例的输入</summary>
+          <table id="board" class="board-table"></table>
+        </details>
+        <button id="raw-toggle" class="button button-ghost" type="button" aria-expanded="false">查看原始 AuditReport JSON</button>
+        <pre id="raw-json" class="raw-json" hidden></pre>
+      </section>
+
+      <aside class="panel report-panel" aria-labelledby="report-title">
+        <div class="panel-heading">
+          <h2 id="report-title">审计报告</h2>
+          <div class="report-actions">
+            <button id="open-report" class="button button-ghost" type="button">新标签打开</button>
+            <button id="download-report" class="button button-ghost" type="button">下载 HTML</button>
+          </div>
+        </div>
+        <p class="muted">由 arx.audit.report_html 生成；页面不重新实现判决逻辑。</p>
+        <iframe id="report-frame" class="report-frame" title="arx audit report" sandbox="allow-same-origin"></iframe>
+      </aside>
+    </main>
+
+    <section class="panel gate" aria-labelledby="gate-title">
+      <div class="panel-heading">
+        <h2 id="gate-title">这道闸拒绝什么</h2>
+        <span class="muted">每一条都是拒绝理由，不是失败</span>
+      </div>
+      <table class="gate-table">
+        <thead>
+          <tr><th>检查</th><th>在什么情况下拒绝</th><th>判决</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>actor-disjointness</td><td>gold 生产者同时是参赛者</td><td><span class="verdict-badge verdict-undecidable">UNDECIDABLE</span></td></tr>
+          <tr><td>common denominator</td><td>地板和榜面用了不同的 item 集</td><td><span class="verdict-badge verdict-undecidable">UNDECIDABLE</span></td></tr>
+          <tr><td>multi-generator</td><td>少于三名 gold 生成者</td><td><span class="verdict-badge verdict-undecidable">UNDECIDABLE</span></td></tr>
+          <tr><td>power-bounded</td><td>margin 小于声明功效下的 MDE</td><td><span class="verdict-badge verdict-marginal">MARGINAL</span></td></tr>
+          <tr><td>floor above chance</td><td>地板本身无法与随机水平区分</td><td><span class="verdict-badge verdict-undecidable">UNDECIDABLE</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel boundaries" aria-labelledby="boundaries-title">
+      <div class="panel-heading">
+        <h2 id="boundaries-title">这个 Demo 不证明什么</h2>
+        <span class="muted">合成案例与真实 case study 分开</span>
+      </div>
+      <ul id="boundaries"></ul>
+      <p id="case-study" class="case-study"></p>
+    </section>
+
+    <section class="panel provenance" aria-labelledby="meta-title">
+      <div class="panel-heading">
+        <h2 id="meta-title">构建信息</h2>
+        <span class="muted">回放的是哪一次运行</span>
+      </div>
+      <dl id="meta"></dl>
+    </section>
+
+    <footer class="footer">
+      <p>
+        <strong>真实：</strong>每次判决都由 <code>arx.audit.audit_leaderboard</code> 在构建时执行；
+        报告由 <code>arx.audit.report_html</code> 生成。
+        <strong>模拟：</strong>合成投票矩阵不是真实模型排名；本页不重算 ChaosNLI 真实案例。
+      </p>
+    </footer>
+  </div>
+  <noscript>这个页面需要 JavaScript 才能读取 cases.json。</noscript>
+  <script src="./app.js"></script>
+</body>
+</html>

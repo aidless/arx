@@ -42,6 +42,18 @@ python3 -m arx.cli --help
 Python 3.12+ is the only supported version and the only one required — the core
 package imports nothing beyond `numpy` and the standard library.
 
+## Demo
+
+[Live demo](https://aidless.github.io/arx/) · [Demo docs](demo/README.md)
+
+Six synthetic audit cases run through `audit_leaderboard` at build time; the
+gallery shows the four verdicts and the exact refusal reasons.
+
+```bash
+python3 demo/server.py                  # http://127.0.0.1:8000/
+python3 -m unittest demo/test_demo.py -v
+```
+
 ## Audit a leaderboard
 
 ```bash

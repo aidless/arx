@@ -37,6 +37,9 @@ jobs:
       - name: Test
         run: python3 -m pytest tests/ -v
 
+      - name: Demo contract tests
+        run: python3 -m unittest demo/test_demo.py -v
+
       - name: Ledger integrity smoke test
         run: bash scripts/run_ci_checks.sh
 
