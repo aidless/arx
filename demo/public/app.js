@@ -26,6 +26,12 @@ function fmt(value) {
   return String(value);
 }
 
+function num(value, digits = 4) {
+  if (value === null || value === undefined) return "—";
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toFixed(digits) : fmt(value);
+}
+
 function renderSummary(payload) {
   const summary = payload.summary;
   const verdicts = summary.verdicts || {};
@@ -226,6 +232,90 @@ function renderDetail() {
   renderReport(item);
 }
 
+function renderRealCase(payload) {
+  const section = document.querySelector(".real-case");
+  const data = payload.real_case;
+  if (!data) {
+    if (section) section.hidden = true;
+    return;
+  }
+  $("real-case-note").textContent = data.note || "";
+  const link = $("real-case-link");
+  link.href = data.url;
+  const root = $("real-case-cards");
+  root.replaceChildren();
+  for (const audit of data.audits || []) {
+    const card = el("article", "real-case-card");
+    const head = el("div", "real-case-head");
+    head.append(el("h3", null, audit.label));
+    head.append(
+      el("span", `verdict-badge ${verdictClass(audit.verdict)}`, audit.verdict)
+    );
+    card.append(head);
+    const metrics = el("div", "real-case-metrics");
+    const rows = [
+      ["floor", num(audit.floor)],
+      ["leader", `${fmt(audit.leader)} = ${num(audit.leader_score)}`],
+      ["margin", audit.margin === null || audit.margin === undefined
+        ? "—" : `${audit.margin >= 0 ? "+" : ""}${num(audit.margin)}`],
+      ["MDE", num(audit.mde)],
+      ["items", fmt(audit.n_items)],
+      ["floor source", fmt(audit.floor_source)],
+    ];
+    for (const [label, value] of rows) {
+      const metric = el("div", "real-case-metric");
+      metric.append(el("span", "label", label));
+      metric.append(el("span", "value", value));
+      metrics.append(metric);
+    }
+    card.append(metrics);
+    card.append(el("p", "real-case-source", audit.source));
+    root.append(card);
+  }
+}
+
+function renderSensitivity(payload) {
+  const section = document.querySelector(".sensitivity");
+  const data = payload.sensitivity;
+  if (!data) {
+    if (section) section.hidden = true;
+    return;
+  }
+  const table = $("sensitivity-table");
+  table.replaceChildren();
+  const thead = el("thead");
+  const headRow = el("tr");
+  headRow.append(el("th", null, "items \\ delta"));
+  for (const delta of data.deltas || []) {
+    headRow.append(el("th", null, `delta=${delta}`));
+  }
+  thead.append(headRow);
+  table.append(thead);
+  const body = el("tbody");
+  for (const row of data.rows || []) {
+    const tr = el("tr");
+    tr.append(el("th", null, fmt(row.n_items)));
+    for (const cell of row.cells || []) {
+      const td = el("td");
+      td.append(
+        el("span", `verdict-badge ${verdictClass(cell.verdict)}`, cell.verdict)
+      );
+      td.append(
+        el(
+          "div",
+          "sensitivity-detail",
+          `floor ${num(cell.floor)} · margin ${num(cell.margin)} · mde ${num(cell.mde)}`
+        )
+      );
+      td.title = `n=${cell.n_items}, delta=${cell.delta}, floor=${cell.floor}, margin=${cell.margin}, mde=${cell.mde}`;
+      tr.append(td);
+    }
+    body.append(tr);
+  }
+  table.append(body);
+  $("sensitivity-note").textContent = data.note || "";
+}
+
 function renderBoundaries(payload) {
   const root = $("boundaries");
   root.replaceChildren();
@@ -284,6 +374,8 @@ function renderMode() {
 
 function renderAll() {
   renderSummary(state.payload);
+  renderRealCase(state.payload);
+  renderSensitivity(state.payload);
   renderCases();
   renderDetail();
   renderBoundaries(state.payload);

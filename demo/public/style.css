@@ -497,3 +497,91 @@ h2 { margin: 0; font-size: 15px; letter-spacing: -0.01em; }
   .panel { padding: 15px; }
   .report-frame { height: 480px; }
 }
+
+/* ---------- real case + sensitivity (deepening) ---------- */
+.real-case { margin-top: 16px; }
+.real-case-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.real-case-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  background: #fbfcfd;
+  min-width: 0;
+}
+.real-case-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.real-case-head h3 { margin: 0; font-size: 15px; }
+.real-case-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.real-case-metric {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 8px 9px;
+  background: #fff;
+}
+.real-case-metric .label {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.real-case-metric .value {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.real-case-source {
+  margin: 0;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+.sensitivity { margin-top: 16px; }
+.sensitivity-scroll { overflow-x: auto; }
+.sensitivity-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.sensitivity-table th,
+.sensitivity-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 6px;
+  text-align: left;
+  vertical-align: top;
+}
+.sensitivity-table th { color: var(--muted); font-weight: 700; }
+.sensitivity-table td { min-width: 150px; }
+.sensitivity-detail {
+  margin-top: 4px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .real-case-grid { grid-template-columns: 1fr; }
+  .sensitivity-table { min-width: 780px; }
+}

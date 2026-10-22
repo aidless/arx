@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>arx · 榜单可读性审计 Demo</title>
-  <meta name="description" content="排名差只有超过标签噪声地板才可读；六个案例展示 arx 的四种判决与拒绝理由。">
+  <meta name="description" content="排名差只有超过标签噪声地板才可读；合成案例展示 arx 的四种判决与拒绝理由，并附真实 ChaosNLI 对比。">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
         <h1>排名差只有超过<br>标签噪声地板，<br>才值得读。</h1>
         <p class="lede">
           arx 不回答“这个效应够不够大”，它先回答“这份测量有没有能力分辨这个比较”。
-          六个合成案例在构建时由 <code>arx.audit</code> 重算，判决和拒绝理由都来自真实调用。
+          合成案例在构建时由 <code>arx.audit</code> 重算，判决和拒绝理由都来自真实调用。
         </p>
       </div>
       <div class="mode-card">
@@ -73,6 +73,26 @@
         <iframe id="report-frame" class="report-frame" title="arx audit report" sandbox="allow-same-origin"></iframe>
       </aside>
     </main>
+
+    <section id="real-case" class="panel real-case" aria-labelledby="real-case-title">
+      <div class="panel-heading">
+        <h2 id="real-case-title">真实数据案例：同一榜面，两种地板</h2>
+        <a id="real-case-link" class="button button-ghost" target="_blank" rel="noreferrer">一手 case study</a>
+      </div>
+      <p id="real-case-note" class="muted"></p>
+      <div id="real-case-cards" class="real-case-grid"></div>
+    </section>
+
+    <section id="sensitivity" class="panel sensitivity" aria-labelledby="sensitivity-title">
+      <div class="panel-heading">
+        <h2 id="sensitivity-title">分辨率敏感性</h2>
+        <span class="muted">同一 board，只变 items 与声明 delta</span>
+      </div>
+      <div class="sensitivity-scroll">
+        <table id="sensitivity-table" class="sensitivity-table"></table>
+      </div>
+      <p id="sensitivity-note" class="muted"></p>
+    </section>
 
     <section class="panel gate" aria-labelledby="gate-title">
       <div class="panel-heading">

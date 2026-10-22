@@ -170,6 +170,43 @@ def _case_specs() -> list[dict]:
                 "note": "pure coin-flip generators; floor is not above chance",
             },
         },
+        {
+            "id": "domain_mismatch",
+            "title": "地板与榜面用了不同的 item 集",
+            "question": "两个统计量是在同一批 item 上算的吗？",
+            "expected": "UNDECIDABLE",
+            "votes": votes(5, 400, 0.93, 0),
+            "scores": base_scores,
+            "kwargs": {
+                **base_kwargs,
+                "leaderboard_item_ids": list(range(150)),
+                "floor_item_ids": list(range(400)),
+            },
+            "board": {
+                "n_generators": 5, "n_items": 400, "agreement": 0.93,
+                "seed": 0, "scores": base_scores, "delta_declared": 0.02,
+                "judge_ids": base_judges, "contestant_ids": base_contestants,
+                "leaderboard_items": 150, "floor_items": 400,
+            },
+        },
+        {
+            "id": "single_generator",
+            "title": "只有一名 gold 生成者",
+            "question": "只有一个人产出的标签，能定义复现地板吗？",
+            "expected": "UNDECIDABLE",
+            "votes": votes(1, 400, 0.93, 0),
+            "scores": base_scores,
+            "kwargs": {
+                "judge_ids": ["g1"],
+                "contestant_ids": base_contestants,
+                "delta_declared": 0.02,
+            },
+            "board": {
+                "n_generators": 1, "n_items": 400, "agreement": 0.93,
+                "seed": 0, "scores": base_scores, "delta_declared": 0.02,
+                "judge_ids": ["g1"], "contestant_ids": base_contestants,
+            },
+        },
     ]
 
 
@@ -267,6 +304,90 @@ def _case_payload(spec: dict, generated_at: str) -> dict:
     }
 
 
+def _sensitivity_grid() -> dict:
+    n_items_values = [40, 80, 120, 200, 400]
+    deltas = [0.005, 0.01, 0.02, 0.05]
+    judges = {"g1", "g2", "g3", "g4", "g5"}
+    base = votes(5, 400, 0.93, 0)
+    rows = []
+    for n_items in n_items_values:
+        cells = []
+        for delta in deltas:
+            report = audit_leaderboard(
+                base[:, :n_items],
+                {"strong": 0.96, "weak": 0.60},
+                judge_ids=judges,
+                contestant_ids={"strong", "weak"},
+                delta_declared=delta,
+                n_boot=500,
+                seed=0,
+            )
+            cells.append({
+                "n_items": n_items,
+                "delta": delta,
+                "verdict": report.verdict.value,
+                "floor": report.floor_estimate,
+                "margin": report.margin,
+                "threshold": report.threshold,
+                "mde": report.mde,
+            })
+        rows.append({"n_items": n_items, "cells": cells})
+    return {
+        "n_items": n_items_values,
+        "deltas": deltas,
+        "rows": rows,
+        "note": (
+            "嵌套样本：同一个 400-item pool 的前 n 个 item；"
+            "只变 n 与声明的 delta，n_boot=500。"
+        ),
+    }
+
+
+def _real_case() -> dict | None:
+    path = (ROOT / "case-studies" / "chaosnli-noise-floor"
+            / "results_judge_panel.json")
+    if not path.exists():
+        return None
+    data = json.loads(path.read_text(encoding="utf-8"))
+    labels = {
+        "human": "100 human annotations",
+        "llm_judge_panel": "32 named LLM judges",
+    }
+    audits = []
+    for key, label in labels.items():
+        audit = (data.get("audits") or {}).get(key)
+        if not isinstance(audit, dict):
+            continue
+        audits.append({
+            "id": key,
+            "label": label,
+            "verdict": audit.get("verdict"),
+            "floor": audit.get("floor_estimate"),
+            "leader": audit.get("leader_system"),
+            "leader_score": audit.get("leader_score"),
+            "margin": audit.get("margin"),
+            "mde": audit.get("mde"),
+            "n_items": audit.get("n_items", data.get("n_items")),
+            "floor_source": audit.get("floor_source"),
+            "source": (
+                "case-studies/chaosnli-noise-floor/results_judge_panel.json"
+                f"#/audits/{key}"
+            ),
+        })
+    if not audits:
+        return None
+    return {
+        "title": "ChaosNLI: same board, two floors",
+        "url": (
+            "https://github.com/aidless/arx/blob/main/case-studies/"
+            "chaosnli-noise-floor/README.md"
+        ),
+        "source": "case-studies/chaosnli-noise-floor/results_judge_panel.json",
+        "audits": audits,
+        "note": "同一榜面，只换地板来源；本页回放 case study 结果，不重算。",
+    }
+
+
 def _git_snapshot() -> tuple[str, bool, list[str]]:
     try:
         commit = subprocess.check_output(
@@ -301,6 +422,44 @@ def build_payload(generated_at: str | None = None) -> dict:
         case["id"] for case in cases
         if case["verdict"] != expected.get(case["id"])
     ]
+    sensitivity = _sensitivity_grid()
+    real_case = _real_case()
+    sensitivity_checks = [
+        {
+            "name": f"sensitivity.{row['n_items']}.{cell['delta']}",
+            "verdict": cell["verdict"],
+            "ok": cell["verdict"] in VERDICTS,
+        }
+        for row in sensitivity["rows"]
+        for cell in row["cells"]
+    ]
+    real_checks = []
+    if real_case:
+        source_path = (ROOT / real_case["source"])
+        source = json.loads(source_path.read_text(encoding="utf-8"))
+        for audit in real_case["audits"]:
+            source_audit = (source.get("audits") or {}).get(audit["id"], {})
+            real_checks.extend([
+                {
+                    "name": f"real_case.{audit['id']}.verdict",
+                    "expected": source_audit.get("verdict"),
+                    "actual": audit["verdict"],
+                    "ok": audit["verdict"] == source_audit.get("verdict"),
+                },
+                {
+                    "name": f"real_case.{audit['id']}.floor",
+                    "expected": source_audit.get("floor_estimate"),
+                    "actual": audit["floor"],
+                    "ok": audit["floor"] == source_audit.get("floor_estimate"),
+                },
+                {
+                    "name": f"real_case.{audit['id']}.margin",
+                    "expected": source_audit.get("margin"),
+                    "actual": audit["margin"],
+                    "ok": audit["margin"] == source_audit.get("margin"),
+                },
+            ])
+    all_checks = sensitivity_checks + real_checks
     commit, dirty, dirty_paths = _git_snapshot()
     return {
         "meta": {
@@ -315,7 +474,7 @@ def build_payload(generated_at: str | None = None) -> dict:
             "python": sys.version.split()[0],
             "numpy": np.__version__,
             "note": (
-                "六个合成案例在构建时由 arx.audit 重算；"
+                "合成案例在构建时由 arx.audit 重算；"
                 "报告 HTML 由 arx.audit.report_html 生成。"
             ),
         },
@@ -324,19 +483,24 @@ def build_payload(generated_at: str | None = None) -> dict:
             "verdicts": verdicts,
         },
         "cases": cases,
+        "sensitivity": sensitivity,
+        "real_case": real_case,
         "case_study": CASE_STUDY,
         "boundaries": [
-            "这六个案例是合成投票矩阵，用来行使闸的四种判决；不是真实模型排名。",
+            "这些合成案例是合成投票矩阵，用来行使闸的四种判决；不是真实模型排名。",
             "READABLE 只说明差距超过测量误差，不说明指标本身是对的。",
             "闸审计的是榜面的可读性，不审计模型输出是否忠实、任务是否有意义。",
-            "真实数据案例见 case-studies/chaosnli-noise-floor/；本页不重算那份案例。",
+            "真实数据案例见 case-studies/chaosnli-noise-floor/；本页回放那份结果，不重算语料。",
             "报告 HTML 由 arx.audit.report_html 生成；页面不重新实现判决逻辑。",
         ],
         "verification": {
-            "status": "MATCH" if not mismatches else "MISMATCH",
+            "status": ("MATCH" if not mismatches
+                       and all(item["ok"] for item in all_checks)
+                       else "MISMATCH"),
             "cases": len(cases),
             "mismatches": mismatches,
             "expected": expected,
+            "checks": all_checks,
         },
     }
 

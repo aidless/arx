@@ -101,19 +101,47 @@ class DemoPayloadTest(unittest.TestCase):
         payload = self.payload
         self.assertEqual(payload["verification"]["status"], "MATCH")
         self.assertEqual(payload["verification"]["mismatches"], [])
-        self.assertEqual(payload["summary"]["cases"], 6)
+        self.assertEqual(payload["summary"]["cases"], 8)
         self.assertEqual(payload["summary"]["verdicts"], {
-            "READABLE": 1, "MARGINAL": 1, "UNREADABLE": 1, "UNDECIDABLE": 3,
+            "READABLE": 1, "MARGINAL": 1, "UNREADABLE": 1, "UNDECIDABLE": 5,
         })
         by_id = {case["id"]: case for case in payload["cases"]}
         self.assertEqual(by_id["readable"]["verdict"], "READABLE")
         self.assertEqual(by_id["marginal"]["verdict"], "MARGINAL")
         self.assertEqual(by_id["unreadable"]["verdict"], "UNREADABLE")
-        self.assertEqual(by_id["two_generators"]["verdict"], "UNDECIDABLE")
-        self.assertIn("floor_degenerate", by_id["two_generators"]["reason_codes"])
-        self.assertIn("actors_overlap", by_id["actors_overlap"]["reason_codes"])
+        for case_id in ("two_generators", "actors_overlap", "noise",
+                        "domain_mismatch", "single_generator"):
+            self.assertEqual(by_id[case_id]["verdict"], "UNDECIDABLE")
+        self.assertIn("domain_mismatch", by_id["domain_mismatch"]["reason_codes"])
+        self.assertIn("single_generator", by_id["single_generator"]["reason_codes"])
         self.assertIn("floor_degenerate", by_id["noise"]["reason_codes"])
         self.assertIsNotNone(by_id["noise"]["chance"])
+
+    def test_sensitivity_grid(self) -> None:
+        grid = self.payload["sensitivity"]
+        self.assertEqual(len(grid["rows"]), len(grid["n_items"]))
+        for row in grid["rows"]:
+            self.assertEqual(len(row["cells"]), len(grid["deltas"]))
+            for cell in row["cells"]:
+                self.assertIn(cell["verdict"],
+                              {"READABLE", "MARGINAL", "UNREADABLE",
+                               "UNDECIDABLE"})
+        verdicts = {
+            cell["verdict"] for row in grid["rows"] for cell in row["cells"]
+        }
+        self.assertTrue({"READABLE", "MARGINAL"} <= verdicts)
+        self.assertTrue(grid["note"])
+
+    def test_real_case(self) -> None:
+        real = self.payload["real_case"]
+        self.assertIsNotNone(real)
+        self.assertEqual(len(real["audits"]), 2)
+        by_id = {audit["id"]: audit for audit in real["audits"]}
+        self.assertEqual(by_id["human"]["verdict"], "READABLE")
+        self.assertEqual(by_id["llm_judge_panel"]["verdict"], "UNREADABLE")
+        self.assertTrue(real["url"].startswith("https://github.com/aidless/arx/"))
+        self.assertEqual(self.payload["verification"]["status"], "MATCH")
+        self.assertEqual(len(self.payload["verification"]["checks"]), 26)
 
     def test_report_html_contract(self) -> None:
         for case in self.payload["cases"]:
@@ -140,7 +168,7 @@ class DemoPayloadTest(unittest.TestCase):
             path = Path(tmp) / "cases.json"
             write_payload(path, self.payload)
             loaded = json.loads(path.read_text(encoding="utf-8"))
-            self.assertEqual(loaded["summary"]["cases"], 6)
+            self.assertEqual(loaded["summary"]["cases"], 8)
 
 
 class DemoGuardTest(unittest.TestCase):
@@ -180,6 +208,8 @@ class DemoGuardTest(unittest.TestCase):
             "mode-badge", "mode-note", "rerun", "summary", "case-list",
             "case-title", "case-question", "verdict", "metrics", "reasons",
             "board", "raw-toggle", "report-frame", "boundaries", "meta",
+            "real-case", "real-case-cards", "real-case-link",
+            "sensitivity", "sensitivity-note",
         ):
             self.assertIn(f'id="{element_id}"', html, element_id)
 
@@ -212,7 +242,7 @@ class DemoServerTest(unittest.TestCase):
 
             with urllib.request.urlopen(f"{base}/cases.json", timeout=60) as response:
                 payload = json.load(response)
-            self.assertEqual(payload["summary"]["cases"], 6)
+            self.assertEqual(payload["summary"]["cases"], 8)
 
             request = urllib.request.Request(
                 f"{base}/api/run",
@@ -222,7 +252,7 @@ class DemoServerTest(unittest.TestCase):
             )
             with urllib.request.urlopen(request, timeout=60) as response:
                 rerun = json.load(response)
-            self.assertEqual(rerun["summary"]["cases"], 6)
+            self.assertEqual(rerun["summary"]["cases"], 8)
             self.assertEqual(rerun["cases"][0]["id"], "readable")
         finally:
             httpd.shutdown()

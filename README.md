@@ -46,8 +46,9 @@ package imports nothing beyond `numpy` and the standard library.
 
 [Live demo](https://aidless.github.io/arx/) · [Demo docs](demo/README.md)
 
-Six synthetic audit cases run through `audit_leaderboard` at build time; the
-gallery shows the four verdicts and the exact refusal reasons.
+Eight synthetic audit cases run through `audit_leaderboard` at build time; the
+gallery shows the four verdicts and the exact refusal reasons. It also includes
+a nested-sample sensitivity grid and the real ChaosNLI human-vs-LLM-floor case.
 
 ```bash
 python3 demo/server.py                  # http://127.0.0.1:8000/
