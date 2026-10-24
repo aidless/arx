@@ -9,7 +9,7 @@ could actually resolve the thing being claimed.
 [![CI](https://github.com/aidless/arx/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/arx/actions/workflows/ci.yml)
 
 ```
-pytest: 373 passed   |   ruff: clean   |   examples: 6, all runnable offline
+pytest: 370 passed, 3 skipped   |   ruff: clean   |   examples: 6, all runnable offline
 ```
 
 ## The one-sentence version
@@ -20,13 +20,36 @@ floor of the labels it was measured against — and most of them don't.
 ## Install and run
 
 ```bash
-cd arx
+# from a checkout
+git clone https://github.com/aidless/arx && cd arx
 python3 -m pip install -e .
 python3 examples/01_quick_run.py     # no API key, no network, no model
+
+# or install the package straight from GitHub
+python3 -m pip install "git+https://github.com/aidless/arx.git"
+arx --help
 ```
 
 The examples are the fastest way to see what the gate does. Each one runs
 offline, in a few seconds, and prints the numbers its own code produced.
+
+`examples/02_audit_a_leaderboard.py` prints the verdicts with the numbers that
+produced them. Two excerpts:
+
+```text
+  five generators agreeing only by chance
+    verdict  : UNDECIDABLE
+    reason   : floor_degenerate
+    floor (0.4640) is at or below the chance level (0.5000);
+    no sample size makes it informative
+
+Unpaired vs paired resolution: read mde_method
+  without per-item scores : mde=0.0274 (binomial_approx)  -> READABLE
+  with per-item scores    : mde=0.0743 (cluster_bootstrap)  -> MARGINAL
+```
+
+Same board, same generators, same items. The verdict moved because the
+resolution method moved — which is why `mde_method` is always in the report.
 
 The `arx` command lands wherever pip puts user scripts. On this machine that is
 `~/.local/bin`, which is often not on `PATH`, so either add it or call the CLI as
@@ -163,8 +186,8 @@ makes the classical tools necessary rather than optional:
 
 ## Status
 
-The statistical core and the loop are complete and tested (373 tests, ruff
-clean, Python 3.12). The literature and Zotero integrations are implemented but
+The statistical core and the loop are complete and tested (373 tests: 370
+passing, 3 skipped; ruff clean; Python 3.12). The literature and Zotero integrations are implemented but
 have not been exercised against live services — `arx doctor` reports what your
 install can actually do. The RL/Goodhart demonstration (`arx.rl.goodhart_env`) is a bandit with
 judge noise, not a research result.
