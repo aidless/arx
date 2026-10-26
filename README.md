@@ -30,6 +30,38 @@ python3 -m pip install "git+https://github.com/aidless/arx.git"
 arx --help
 ```
 
+## 60-second demo
+
+No API key, no network, no model:
+
+```bash
+git clone https://github.com/aidless/arx && cd arx
+make quickstart
+```
+
+![arx terminal demo](docs/assets/demo.gif)
+
+`make quickstart` runs the leaderboard audit example. The GIF shows the same
+verdicts with the numbers that produced them: one readable board, three
+undecidable ones for different reasons, and one marginal result that is inside
+the resolution bound. `make demo` is the separate browser demo.
+
+## 60-second demo
+
+No API key, no network, no model:
+
+```bash
+git clone https://github.com/aidless/arx && cd arx
+make quickstart
+```
+
+![arx terminal demo](docs/assets/demo.gif)
+
+`make quickstart` runs the leaderboard audit example. The GIF shows one
+READABLE board, three UNDECIDABLE refusals for different reasons, and one
+MARGINAL result inside the resolution bound. `make demo` is the separate
+browser demo.
+
 The examples are the fastest way to see what the gate does. Each one runs
 offline, in a few seconds, and prints the numbers its own code produced.
 

@@ -1,4 +1,7 @@
-.PHONY: demo demo-build demo-test
+.PHONY: quickstart demo demo-build demo-test
+
+quickstart:
+	python3 examples/02_audit_a_leaderboard.py
 
 demo:
 	python3 demo/server.py

@@ -1,0 +1,121 @@
+# captured 2026-10-25 from: make quickstart (rc=0, 986 ms)
+# raw stdout; docs/assets/demo.gif is a curated view
+python3 examples/02_audit_a_leaderboard.py
+
+A leaderboard is readable only if four things hold
+--------------------------------------------------
+
+  1. actor-disjointness   the gold producers are not the contestants
+  2. common denominator   the floor and the board are computed on the same items
+  3. multi-generator      at least three gold producers
+  4. power-bounded        the margin exceeds what this sample can resolve
+
+
+Tenet 3 and 4: five generators, a clear separation
+--------------------------------------------------
+
+  five generators, agreement 0.93
+    verdict  : READABLE
+    floor    : 0.9210 (loo, m=5, n=400)
+    margin   : +0.0390   threshold: 0.0274 = max(delta=0.02, mde=0.0274)
+
+    READABLE. But note what that word does not mean: it says the
+    gap is larger than the measurement error. It says nothing about
+    whether the measurement is the right one.
+
+Tenet 3: two generators are not enough
+--------------------------------------
+
+  two generators
+    verdict  : UNDECIDABLE
+    reason   : floor_degenerate
+
+    With m=2, leave-one-out leaves a single rater: 'agreement with
+    the others' degenerates into agreement with itself. There is no
+    estimator, so the honest verdict is UNDECIDABLE, not a number.
+
+Tenet 1: the board and the floor must share their items
+-------------------------------------------------------
+
+  floor on 400 items, board on 150
+    verdict  : UNDECIDABLE
+    reason   : domain_mismatch
+
+    Two different denominators. The difference between the two
+    statistics is not an effect size, it is an artefact of which items
+    each was computed on.
+
+Tenet 2: the judge cannot be one of the contestants
+---------------------------------------------------
+
+  'strong' is also a gold generator
+    verdict  : UNDECIDABLE
+    reason   : actors_overlap
+
+    If a contestant helped define the gold, its own score partly
+    measures how well it agrees with itself.
+
+Tenet 4: the margin has to beat what the sample can resolve
+-----------------------------------------------------------
+
+  same board, only 120 items
+    verdict  : MARGINAL
+    floor    : 0.9333 (loo, m=5, n=120)
+    margin   : +0.0267   threshold: 0.0501 = max(delta=0.02, mde=0.0501)
+    reason   : margin +0.0267 is inside the resolution bound 0.0501
+
+    The gap did not change; the resolution did. A number below the
+    minimum detectable effect is not a small effect, it is no
+    measurement at all.
+
+The trap: gold producers that carry no signal
+---------------------------------------------
+
+  five generators agreeing only by chance
+    verdict  : UNDECIDABLE
+    reason   : floor_degenerate
+
+    floor vs chance : {'z': -1.4399999999999968, 'critical_z': 1.9599639845400536, 'se': 0.025, 'n_items': 400, 'n_items_needed': None, 'note': 'the floor (0.4640) is at or below the chance level (0.5000); no sample size makes it informative', 'above_chance': False}
+
+    This is the one that matters. Five independent coin-flippers agree with
+    each other about half the time, so the floor sits near 0.5 -- and any
+    score above that looks like a landslide. A margin-only check calls it
+    READABLE with a huge margin. The floor is tested against the chance rate
+    it would have if the generators carried no signal at all, and when it
+    cannot be distinguished from chance the verdict is UNDECIDABLE.
+
+    The resolution comes from the number of ITEMS, not the number of
+    generators: the floor's variability is driven by which items were drawn,
+    and that variation is shared by every generator.
+    n_items_needed to call this floor above chance: None
+    the floor (0.4640) is at or below the chance level (0.5000); no sample size makes it informative
+
+Unpaired vs paired resolution: read mde_method
+----------------------------------------------
+  without per-item scores : mde=0.0274 (binomial_approx)  -> READABLE
+  with per-item scores    : mde=0.0743 (cluster_bootstrap)  -> MARGINAL
+
+    Same board, same generators, same items. The verdict moved from
+    READABLE to MARGINAL because the MDE moved from
+    0.0274 to 0.0743, and nothing about the data changed.
+
+    The fallback treats the leader's accuracy as an independent binomial
+    proportion. The paired bootstrap resamples items and keeps the two systems'
+    outcomes on the same item together, so it sees the correlation the fallback
+    assumes away. When the two systems agree item-by-item more than chance
+    would predict, the paired difference has a *larger* standard error than the
+    independent approximation suggests -- the fallback was optimistic.
+
+    An MDE that quietly answers a different question than the one asked is the
+    failure this package exists to make visible. It is not resolved by picking
+    the friendlier number; it is resolved by naming the method, which is why
+    ``mde_method`` is always in the report.
+
+The pieces, if you want them separately
+---------------------------------------
+  loo_floor per generator : [0.92, 0.9325, 0.92, 0.9025, 0.93]
+  median                  : 0.9200
+  identifiability         : identifiable=True pairwise_agreement=0.8785
+  same call, noisy pool   : ['floor_degenerate']
+
+  Verdicts available      : ['READABLE', 'MARGINAL', 'UNREADABLE', 'UNDECIDABLE', 'STOP_EARLY']
