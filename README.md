@@ -9,7 +9,7 @@ could actually resolve the thing being claimed.
 [![CI](https://github.com/aidless/arx/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/arx/actions/workflows/ci.yml)
 
 ```
-pytest: 370 passed, 3 skipped   |   ruff: clean   |   examples: 6, all runnable offline
+pytest: 371 passed, 3 skipped   |   ruff: clean   |   examples: 6, all runnable offline
 ```
 
 ## The one-sentence version
