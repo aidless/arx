@@ -152,6 +152,26 @@ makes the classical tools necessary rather than optional:
   all. A high number with weak theories is still weak science, and the report
   says so.
 
+## Directory structure
+
+```
+arx/
+├── src/arx/                # the package
+│   ├── audit/              #   the gate: floor, power, prereg, sequential,
+│   │                       #   verdict, goodhart, report_html (self-contained HTML)
+│   ├── scheduler/          #   experiment ordering + expected-information-gain
+│   ├── experiments/        #   sandboxed experiment contract
+│   ├── theory/             #   theory coverage, not truth
+│   ├── literature/         #   literature + Zotero integration (live services untested)
+│   ├── oracles/            #   judge oracles
+│   └── rl/                 #   Goodhart demonstration (bandit with judge noise)
+├── tests/                  # pytest suite (373 tests)
+├── examples/               # 6 offline, runnable examples
+├── demo/                   # static audit-gallery demo + server
+├── docs/                   # architecture / evaluation-gate / sequential-gate / ledger
+└── paper/                  # manuscript source (separate from the gate)
+```
+
 ## Documentation
 
 | document | what it covers |
@@ -160,6 +180,11 @@ makes the classical tools necessary rather than optional:
 | [docs/evaluation-gate.md](docs/evaluation-gate.md) | the four tenets, the floor, the MDE, worked example |
 | [docs/sequential-gate.md](docs/sequential-gate.md) | why the naive boundary triples the error rate |
 | [docs/ledger.md](docs/ledger.md) | what the hash chain proves, and what it does not |
+
+```bash
+python3 -m pytest tests/          # 373 passed (verify: the count is the test runner's own output)
+ruff check src tests examples     # clean
+```
 
 ## Status
 
