@@ -9,7 +9,7 @@ could actually resolve the thing being claimed.
 [![CI](https://github.com/aidless/arx/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/arx/actions/workflows/ci.yml)
 
 ```
-pytest: 371 passed, 3 skipped   |   ruff: clean   |   examples: 6, all runnable offline
+pytest: 374 passed, 0 skipped (Linux, Python 3.12)   |   ruff: clean   |   examples: 6, all runnable offline
 ```
 
 ## The one-sentence version
@@ -24,6 +24,7 @@ floor of the labels it was measured against — and most of them don't.
 git clone https://github.com/aidless/arx && cd arx
 python3 -m pip install -e .
 python3 examples/01_quick_run.py     # no API key, no network, no model
+python3 -m pytest tests -q           # 374 passed
 
 # or install the package straight from GitHub
 python3 -m pip install "git+https://github.com/aidless/arx.git"
