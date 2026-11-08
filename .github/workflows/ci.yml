@@ -26,10 +26,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install
+      - name: Install (pinned)
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install -e ".[dev]"
+          python3 -m pip install -r requirements.lock
+          python3 -m pip install -e . --no-deps
 
       - name: Lint
         run: python3 -m ruff check src tests examples

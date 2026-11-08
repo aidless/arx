@@ -22,9 +22,9 @@ floor of the labels it was measured against — and most of them don't.
 ```bash
 # from a checkout
 git clone https://github.com/aidless/arx && cd arx
-python3 -m pip install -e .
+python3 -m pip install -r requirements.lock && python3 -m pip install -e . --no-deps
 python3 examples/01_quick_run.py     # no API key, no network, no model
-python3 -m pytest tests -q           # 374 passed
+python3 -m pytest tests -q           # 374 passed (pinned dev+provenance lock)
 
 # or one command: install + tests + demo + both measurements
 make repro
