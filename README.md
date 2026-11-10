@@ -17,6 +17,10 @@ pytest: 374 passed, 0 skipped (Linux, Python 3.12)   |   ruff: clean   |   examp
 A leaderboard's rank difference is readable only if it exceeds the noise
 floor of the labels it was measured against — and most of them don't.
 
+> Pipeline context: arx is the research-loop layer of the three-layer eval
+> pipeline; the verdict layer's frozen demo suite is benchmark-verified:
+> [eval-gate docs/BENCHMARK.md](https://github.com/aidless/eval-gate/blob/main/docs/BENCHMARK.md).
+
 ## Install and run
 
 ```bash
