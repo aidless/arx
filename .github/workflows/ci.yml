@@ -30,8 +30,7 @@ jobs:
 
       - name: Install (pinned)
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.lock
+          python3 -m pip install --require-hashes -r requirements.ci.lock
           python3 -m pip install -e . --no-deps
 
       - name: Lint
@@ -60,8 +59,8 @@ jobs:
 
       - name: Install (no optional extras, no credentials)
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -e .
+          python3 -m pip install --require-hashes -r requirements.ci.lock
+          python3 -m pip install -e . --no-deps
 
       - name: Run every example with an empty environment
         env:
@@ -87,8 +86,8 @@ jobs:
 
       - name: Install
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -e .
+          python3 -m pip install --require-hashes -r requirements.ci.lock
+          python3 -m pip install -e . --no-deps
 
       - name: Produce a ledger and verify it through the CLI
         run: |

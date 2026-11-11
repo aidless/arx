@@ -16,5 +16,5 @@ jobs:
         run: python -m compileall -q . || true
       - name: Tests if present
         run: |
-          if [ -f requirements.txt ]; then pip install -q -r requirements.txt || true; fi
+          if [ -f requirements.ci.lock ]; then pip install -q --require-hashes -r requirements.ci.lock || true; fi
           if command -v pytest >/dev/null 2>&1; then pytest -q; else echo "no pytest"; fi
