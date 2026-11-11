@@ -1,7 +1,11 @@
 # Security Policy
 
-- Please report vulnerabilities privately (open a draft security advisory or
-  contact the maintainer); do not open a public issue with exploit details.
-- This is a research codebase maintained on a best-effort basis: there is no
-  SLA and no bug-bounty program.
-- Do not commit secrets (API keys, tokens, private keys). CI scans for them.
+## Supported Versions
+
+This is a personal research project; only the latest commit on the default branch is supported.
+
+## Reporting a Vulnerability
+
+If you discover a security issue, please **open a private GitHub security advisory** via this repository's **Security → Report a vulnerability** button (https://github.com/aidless/arx/security/advisories/new), or contact the maintainer through their GitHub profile. Please do not open a public issue for exploit details.
+
+You can expect an initial response within 7 days.
