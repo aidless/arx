@@ -44,3 +44,9 @@ ignore = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-q"
+# 让测试导入的是本仓 src/arx，而不是 site-packages 里那份可能过期的安装副本。
+# 实测：不设这一项时 `arx` 解析到 ~/.local/lib/python3.12/site-packages/arx（0.3.0，
+# 缺 audit/report_html.py），tests/test_audit_report.py 收集即报
+# ModuleNotFoundError；设了之后全量 373 项可收集、0 error。
+pythonpath = ["src"]
