@@ -1,0 +1,44 @@
+{
+ "settings": {
+  "seeds": 200,
+  "n_items": 400,
+  "n_generators": 5,
+  "generator_accuracy": 0.93
+ },
+ "true_floor": 0.93,
+ "estimators": {
+  "loo": {
+   "mean": 0.9183,
+   "bias": -0.0117,
+   "sd": 0.0083,
+   "ci95": [
+    0.9021,
+    0.9346
+   ],
+   "covers_true_floor": true,
+   "mean_abs_error": 0.0123
+  },
+  "optimistic": {
+   "mean": 0.9447,
+   "bias": 0.0147,
+   "sd": 0.008,
+   "ci95": [
+    0.929,
+    0.9604
+   ],
+   "covers_true_floor": true,
+   "mean_abs_error": 0.0148
+  },
+  "mean": {
+   "mean": 0.9308,
+   "bias": 0.0008,
+   "sd": 0.0057,
+   "ci95": [
+    0.9197,
+    0.9419
+   ],
+   "covers_true_floor": true,
+   "mean_abs_error": 0.0045
+  }
+ }
+}

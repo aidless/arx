@@ -10,6 +10,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,15 +23,15 @@ jobs:
         python-version: ["3.12", "3.13"]
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install
+      - name: Install (pinned)
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -e ".[dev]"
+          python3 -m pip install --require-hashes -r requirements.ci.lock
+          python3 -m pip install -e . --no-deps
 
       - name: Lint
         run: python3 -m ruff check src tests examples
@@ -50,15 +52,15 @@ jobs:
     # project exists to prevent.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.12"
 
       - name: Install (no optional extras, no credentials)
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -e .
+          python3 -m pip install --require-hashes -r requirements.ci.lock
+          python3 -m pip install -e . --no-deps
 
       - name: Run every example with an empty environment
         env:
@@ -77,15 +79,15 @@ jobs:
     # works end to end on the ledger it produces.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.12"
 
       - name: Install
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -e .
+          python3 -m pip install --require-hashes -r requirements.ci.lock
+          python3 -m pip install -e . --no-deps
 
       - name: Produce a ledger and verify it through the CLI
         run: |

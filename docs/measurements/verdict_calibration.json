@@ -1,0 +1,133 @@
+{
+ "settings": {
+  "seeds": 80,
+  "n_items": 400,
+  "delta_declared": 0.02
+ },
+ "cells": {
+  "clean_floor": [
+   {
+    "true_gap": 0.0,
+    "readable_rate": 0.0,
+    "mean_margin": -0.0115,
+    "mean_mde": 0.0602,
+    "verdict_mix": {
+     "MARGINAL": 19,
+     "UNREADABLE": 61
+    }
+   },
+   {
+    "true_gap": 0.005,
+    "readable_rate": 0.0,
+    "mean_margin": -0.0092,
+    "mean_mde": 0.0595,
+    "verdict_mix": {
+     "MARGINAL": 23,
+     "UNREADABLE": 57
+    }
+   },
+   {
+    "true_gap": 0.01,
+    "readable_rate": 0.0,
+    "mean_margin": -0.0057,
+    "mean_mde": 0.0587,
+    "verdict_mix": {
+     "MARGINAL": 30,
+     "UNREADABLE": 50
+    }
+   },
+   {
+    "true_gap": 0.02,
+    "readable_rate": 0.0,
+    "mean_margin": 0.0026,
+    "mean_mde": 0.0571,
+    "verdict_mix": {
+     "MARGINAL": 46,
+     "UNREADABLE": 34
+    }
+   },
+   {
+    "true_gap": 0.05,
+    "readable_rate": 0.075,
+    "mean_margin": 0.0313,
+    "mean_mde": 0.0523,
+    "verdict_mix": {
+     "MARGINAL": 74,
+     "READABLE": 6
+    }
+   },
+   {
+    "true_gap": 0.1,
+    "readable_rate": 1.0,
+    "mean_margin": 0.0811,
+    "mean_mde": 0.0422,
+    "verdict_mix": {
+     "READABLE": 80
+    }
+   }
+  ],
+  "degraded_floor": [
+   {
+    "true_gap": 0.0,
+    "readable_rate": 0.0,
+    "mean_margin": 0.0089,
+    "mean_mde": 0.0602,
+    "verdict_mix": {
+     "MARGINAL": 55,
+     "UNREADABLE": 25
+    }
+   },
+   {
+    "true_gap": 0.005,
+    "readable_rate": 0.0,
+    "mean_margin": 0.0112,
+    "mean_mde": 0.0595,
+    "verdict_mix": {
+     "MARGINAL": 58,
+     "UNREADABLE": 22
+    }
+   },
+   {
+    "true_gap": 0.01,
+    "readable_rate": 0.0125,
+    "mean_margin": 0.0147,
+    "mean_mde": 0.0587,
+    "verdict_mix": {
+     "MARGINAL": 65,
+     "READABLE": 1,
+     "UNREADABLE": 14
+    }
+   },
+   {
+    "true_gap": 0.02,
+    "readable_rate": 0.0125,
+    "mean_margin": 0.023,
+    "mean_mde": 0.0571,
+    "verdict_mix": {
+     "MARGINAL": 73,
+     "READABLE": 1,
+     "UNREADABLE": 6
+    }
+   },
+   {
+    "true_gap": 0.05,
+    "readable_rate": 0.4875,
+    "mean_margin": 0.0518,
+    "mean_mde": 0.0523,
+    "verdict_mix": {
+     "MARGINAL": 41,
+     "READABLE": 39
+    }
+   },
+   {
+    "true_gap": 0.1,
+    "readable_rate": 1.0,
+    "mean_margin": 0.1015,
+    "mean_mde": 0.0422,
+    "verdict_mix": {
+     "READABLE": 80
+    }
+   }
+  ]
+ }
+}
