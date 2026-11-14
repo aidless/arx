@@ -22,7 +22,7 @@ if str(ROOT / "demo") not in sys.path:
     sys.path.insert(0, str(ROOT / "demo"))
 
 import server  # noqa: E402
-from payload import VERDICTS, build_payload, write_payload  # noqa: E402
+from payload import build_payload, write_payload  # noqa: E402
 
 PUBLIC = ROOT / "demo" / "public"
 PUBLIC_FILES = [
