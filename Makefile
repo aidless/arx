@@ -1,4 +1,4 @@
-.PHONY: install test quickstart demo demo-build demo-test measure repro
+.PHONY: install test eval quickstart demo demo-build demo-test measure repro
 
 install:
 	python3 -m pip install -e .
@@ -25,3 +25,9 @@ demo-build:
 
 demo-test:
 	python3 -m unittest demo/test_demo.py -v
+
+# 验收题库：20 条对包契约的用例（eval/cases.jsonl），外加既有 pytest 套件。
+# 判据见 README「验收标准与复算」：run_cases 必须 20/20，且本目标退出码为 0。
+eval:
+	python3 eval/run_cases.py
+	python3 -m pytest tests -q

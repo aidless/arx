@@ -297,3 +297,40 @@ recorded in a ledger you can verify.
 ## License
 
 Apache-2.0.
+
+## 验收标准与复算
+
+验收判据：本仓判为合格的条件是 `python3 eval/run_cases.py` 通过率必须为 100%（20/20），且 `make eval` 退出码必须为 0；任何一条失败即判为不合格。
+
+这条判据只管「包的对外契约没有漂移」，不管统计结论对不对：floor / MDE 的校准证据在 `docs/measurements/`，由 `make measure` 重新生成，20 条用例不替代它。
+
+| axis | 条数 | 盯的是什么 | 主要来源 |
+|---|---|---|---|
+| floor | 3 | 留一法地板、逐列多数票、生成器不足 3 个时拒绝估计 | `src/arx/audit/floor.py` |
+| power | 3 | MDE、二项标准误、给定效应下的功效 | `src/arx/audit/power.py` |
+| auditor | 3 | 可读判定、评委/选手重叠、共同分母被破坏 | `src/arx/audit/auditor.py` |
+| gate | 2 | 领先者低于地板 → `UNREADABLE`、2 个生成器 → 地板退化 | `src/arx/audit/auditor.py` |
+| sequential | 3 | 单次临界 z、OBF 边界条数与严格递减、有效 alpha | `src/arx/audit/sequential.py` |
+| prereg | 2 | look 数预算、BH 拒绝集 | `src/arx/audit/prereg.py` |
+| ledger | 2 | 哈希链自校验、Merkle root 长度 | `src/arx/experiments/ledger.py` |
+| theory | 1 | 没有 falsifier 的理论不会被标为已证伪 | `src/arx/theory/theory_layer.py` |
+| report | 1 | HTML 报告对恶意标题做转义 | `src/arx/audit/report_html.py` |
+
+三条命令（都在仓库根跑，不需要 API key、不需要网络）：
+
+```bash
+python3 eval/run_cases.py              # 必须 20/20；失败时按 axis 汇总，不报单一 pass_rate
+python3 eval/run_cases.py --selftest   # 篡改第 1 条期望值，应显示 19/20 且退出码为 0
+make eval                              # run_cases + 既有 pytest 套件，退出码必须为 0
+```
+
+复算：`python3 eval/run_cases.py --save` 把逐条结果写进 `eval/run-report.json`（`total` / `passed` / `failed_by_axis` / `results`），重跑即可核对上面的 20/20。期望值是照本仓实现现算后写死的字面量，改一行实现就可能变红——这正是它作为召回闸的意义。带随机性的用例（`auditor-*`、`gate-*`）在用例内固定了 `np.random.default_rng(7)` 与 `seed=0`，同一 numpy 版本下重跑逐位一致；换了 numpy 大版本后若这些条目变红，先怀疑 RNG，再怀疑代码。
+
+失败归因：`run_cases.py` 按 axis 汇总失败条目而不是只报一个总分，例如（示意）：
+
+```text
+6/20 cases passed
+失败归因（按 axis）：
+  auditor: 2 条 —— auditor-actors-overlap, auditor-domain-mismatch
+  sequential: 1 条 —— seq-effective-alpha
+```

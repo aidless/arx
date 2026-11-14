@@ -1,0 +1,129 @@
+{
+ "total": 20,
+ "passed": 20,
+ "failed": 0,
+ "selftest": false,
+ "failed_by_axis": {},
+ "results": [
+  {
+   "id": "floor-loo-mean",
+   "axis": "floor",
+   "ok": true,
+   "detail": "0.8333"
+  },
+  {
+   "id": "floor-column-majority",
+   "axis": "floor",
+   "ok": true,
+   "detail": "111111"
+  },
+  {
+   "id": "floor-refuses-two-generators",
+   "axis": "floor",
+   "ok": true,
+   "detail": "raised ValueError"
+  },
+  {
+   "id": "power-mde-from-se",
+   "axis": "power",
+   "ok": true,
+   "detail": "0.028016"
+  },
+  {
+   "id": "power-binomial-se",
+   "axis": "power",
+   "ok": true,
+   "detail": "0.015"
+  },
+  {
+   "id": "power-at-effect",
+   "axis": "power",
+   "ok": true,
+   "detail": "0.515968"
+  },
+  {
+   "id": "auditor-readable-board",
+   "axis": "auditor",
+   "ok": true,
+   "detail": "READABLE:0.0196:binomial_approx"
+  },
+  {
+   "id": "auditor-actors-overlap",
+   "axis": "auditor",
+   "ok": true,
+   "detail": "UNDECIDABLE:actors_overlap"
+  },
+  {
+   "id": "auditor-domain-mismatch",
+   "axis": "auditor",
+   "ok": true,
+   "detail": "UNDECIDABLE:domain_mismatch"
+  },
+  {
+   "id": "gate-leader-below-floor",
+   "axis": "gate",
+   "ok": true,
+   "detail": "UNREADABLE"
+  },
+  {
+   "id": "gate-two-generators-degenerate",
+   "axis": "gate",
+   "ok": true,
+   "detail": "UNDECIDABLE:floor_degenerate"
+  },
+  {
+   "id": "seq-fixed-sample-boundary",
+   "axis": "sequential",
+   "ok": true,
+   "detail": "1.959964"
+  },
+  {
+   "id": "seq-obf-boundaries-shape",
+   "axis": "sequential",
+   "ok": true,
+   "detail": "3:True"
+  },
+  {
+   "id": "seq-effective-alpha",
+   "axis": "sequential",
+   "ok": true,
+   "detail": "0.016952"
+  },
+  {
+   "id": "prereg-plan-k-max",
+   "axis": "prereg",
+   "ok": true,
+   "detail": "8"
+  },
+  {
+   "id": "prereg-bh-rejects",
+   "axis": "prereg",
+   "ok": true,
+   "detail": "h1,h2"
+  },
+  {
+   "id": "ledger-chain-verify",
+   "axis": "ledger",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "id": "ledger-root-length",
+   "axis": "ledger",
+   "ok": true,
+   "detail": "64"
+  },
+  {
+   "id": "theory-unfalsifiable-not-refuted",
+   "axis": "theory",
+   "ok": true,
+   "detail": "False"
+  },
+  {
+   "id": "report-html-escapes-title",
+   "axis": "report",
+   "ok": true,
+   "detail": "False"
+  }
+ ]
+}
